@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MLC Players Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c14;
+    --surface: #111421;
+    --surface2: #161928;
+    --border: #1e2438;
+    --accent: #00e5ff;
+    --accent2: #ff6b35;
+    --accent3: #7fff6e;
+    --gold: #ffd700;
+    --text: #e8eaf0;
+    --text-muted: #6b7494;
+    --red: #ff3b5c;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* BACKGROUND */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 40% at 10% 0%, rgba(0,229,255,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 90% 100%, rgba(255,107,53,0.05) 0%, transparent 60%),
+      repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.018) 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.018) 40px);
+    pointer-events: none; z-index: 0;
+  }
+
+  /* HEADER */
+  header {
+    position: relative; z-index: 10;
+    padding: 0 2rem;
+    background: rgba(10,12,20,0.9);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .header-inner {
+    max-width: 1600px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 0;
+    gap: 1rem;
+  }
+  .logo {
+    display: flex; align-items: center; gap: 0.8rem;
+  }
+  .logo-icon {
+    width: 42px; height: 42px;
+    background: linear-gradient(135deg, var(--accent), #0080ff);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; box-shadow: 0 0 20px rgba(0,229,255,0.3);
+  }
+  .logo-text {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700; font-size: 1.4rem;
+    letter-spacing: 0.05em;
+  }
+  .logo-text span { color: var(--accent); }
+  .logo-sub {
+    font-size: 0.65rem; color: var(--text-muted);
+    letter-spacing: 0.15em; text-transform: uppercase;
+    display: block; margin-top: -2px;
+  }
+  .header-stats {
+    display: flex; gap: 1.5rem; align-items: center;
+  }
+  .hstat {
+    text-align: center;
+  }
+  .hstat-num {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.5rem; font-weight: 600;
+    color: var(--accent); line-height: 1;
+  }
+  .hstat-label {
+    font-size: 0.6rem; text-transform: uppercase;
+    letter-spacing: 0.12em; color: var(--text-muted);
+  }
+  .hstat-sep { width: 1px; height: 32px; background: var(--border); }
+
+  /* CONTROLS */
+  .controls-wrap {
+    position: relative; z-index: 5;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 1.2rem 2rem;
+  }
+  .controls-inner {
+    max-width: 1600px; margin: 0 auto;
+    display: flex; flex-wrap: wrap; gap: 0.8rem; align-items: center;
+  }
+  .search-box {
+    flex: 1; min-width: 240px;
+    position: relative;
+  }
+  .search-box input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 0.6rem 1rem 0.6rem 2.6rem;
+    border-radius: 8px;
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-box input:focus { border-color: var(--accent); }
+  .search-box input::placeholder { color: var(--text-muted); }
+  .search-icon {
+    position: absolute; left: 0.8rem; top: 50%; transform: translateY(-50%);
+    color: var(--text-muted); font-size: 0.9rem;
+  }
+  select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 0.6rem 2rem 0.6rem 0.9rem;
+    border-radius: 8px;
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.85rem;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7494' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.7rem center;
+    transition: border-color 0.2s;
+  }
+  select:focus { border-color: var(--accent); }
+
+  .view-toggle { display: flex; gap: 0.4rem; }
+  .view-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    width: 36px; height: 36px;
+    border-radius: 7px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+  }
+  .view-btn.active, .view-btn:hover {
+    background: var(--accent); color: var(--bg);
+    border-color: var(--accent);
+  }
+
+  .results-count {
+    margin-left: auto;
+    font-size: 0.8rem; color: var(--text-muted);
+    font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+  .results-count span { color: var(--accent); font-weight: 600; }
+
+  /* TEAM TABS */
+  .team-tabs-wrap {
+    position: relative; z-index: 4;
+    overflow-x: auto;
+    background: var(--bg);
+    border-bottom: 2px solid var(--border);
+    scrollbar-width: none;
+  }
+  .team-tabs-wrap::-webkit-scrollbar { display: none; }
+  .team-tabs {
+    display: flex;
+    max-width: 1600px; margin: 0 auto;
+    padding: 0 2rem;
+    gap: 0;
+  }
+  .team-tab {
+    padding: 0.75rem 1.1rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.78rem; font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    white-space: nowrap;
+    transition: all 0.2s;
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  .team-tab:hover { color: var(--text); }
+  .team-tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  .team-tab .tab-count {
+    background: var(--border);
+    color: var(--text-muted);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 0.65rem;
+  }
+  .team-tab.active .tab-count {
+    background: rgba(0,229,255,0.15);
+    color: var(--accent);
+  }
+
+  /* MAIN */
+  main {
+    position: relative; z-index: 2;
+    max-width: 1600px; margin: 0 auto;
+    padding: 1.5rem 2rem 3rem;
+  }
+
+  /* GRID VIEW */
+  #players-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  #players-grid.list-view {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  /* PLAYER CARD */
+  .player-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.25s;
+    animation: fadeIn 0.3s ease both;
+  }
+  @keyframes fadeIn {
+    from { opacity:0; transform: translateY(12px); }
+    to { opacity:1; transform: translateY(0); }
+  }
+  .player-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(0,229,255,0.12);
+  }
+  .card-top {
+    background: linear-gradient(135deg, var(--surface2), #1a1e30);
+    padding: 1.2rem 1rem 0.8rem;
+    text-align: center;
+    position: relative;
+  }
+  .card-jersey {
+    position: absolute; top: 0.5rem; left: 0.7rem;
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.65rem; font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+  }
+  .card-jersey span {
+    display: block;
+    font-size: 1rem;
+    color: var(--text);
+    line-height: 1;
+  }
+  .card-flag {
+    position: absolute; top: 0.6rem; right: 0.7rem;
+    font-size: 1.2rem;
+  }
+  .player-avatar {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    margin: 0 auto 0.6rem;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem;
+    position: relative;
+  }
+  .card-name {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.95rem; font-weight: 500;
+    line-height: 1.2;
+  }
+  .card-bottom {
+    padding: 0.7rem 1rem;
+    display: flex; flex-direction: column; gap: 0.4rem;
+  }
+  .card-role {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-size: 0.72rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 4px;
+    align-self: flex-start;
+  }
+  .card-team {
+    font-size: 0.7rem; color: var(--text-muted);
+    font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .card-nationality {
+    font-size: 0.7rem; color: var(--text-muted);
+  }
+
+  /* LIST VIEW CARD */
+  #players-grid.list-view .player-card {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 0.8rem 1.2rem;
+    border-radius: 8px;
+  }
+  #players-grid.list-view .card-top {
+    background: none; padding: 0;
+    display: flex; align-items: center; gap: 0.8rem;
+    flex-shrink: 0;
+  }
+  #players-grid.list-view .player-avatar {
+    width: 44px; height: 44px;
+    margin: 0; font-size: 1.3rem;
+  }
+  #players-grid.list-view .card-jersey { position: static; }
+  #players-grid.list-view .card-flag { position: static; font-size: 1rem; }
+  #players-grid.list-view .card-name {
+    font-size: 1rem;
+  }
+  #players-grid.list-view .card-bottom {
+    padding: 0; flex-direction: row; align-items: center;
+    gap: 1rem; flex: 1;
+  }
+  #players-grid.list-view .card-team { flex: 1; }
+  #players-grid.list-view .card-nationality { white-space: nowrap; }
+
+  /* ROLES */
+  .role-batter { background: rgba(0,229,255,0.12); color: var(--accent); }
+  .role-bowler { background: rgba(255,107,53,0.12); color: var(--accent2); }
+  .role-allrounder { background: rgba(127,255,110,0.12); color: var(--accent3); }
+  .role-wicketkeeper { background: rgba(255,215,0,0.12); color: var(--gold); }
+  .role-other { background: rgba(150,150,255,0.12); color: #aab4ff; }
+
+  /* TEAM COLORS for avatars */
+  .team-lv { background: linear-gradient(135deg, #6a0dad, #a855f7); }
+  .team-no { background: linear-gradient(135deg, #00468b, #2196f3); }
+  .team-atl { background: linear-gradient(135deg, #b8000a, #ff5252); }
+  .team-la { background: linear-gradient(135deg, #ffd700, #ff8c00); }
+  .team-chi { background: linear-gradient(135deg, #1b4f72, #2980b9); }
+  .team-mia { background: linear-gradient(135deg, #c8102e, #ff4d6d); }
+  .team-ohio { background: linear-gradient(135deg, #1a472a, #27ae60); }
+  .team-tex { background: linear-gradient(135deg, #8b0000, #e74c3c); }
+  .team-ny { background: linear-gradient(135deg, #0a3161, #3498db); }
+  .team-nash { background: linear-gradient(135deg, #2d1b69, #9b59b6); }
+  .team-was { background: linear-gradient(135deg, #8b0000, #c0392b); }
+  .team-hou { background: linear-gradient(135deg, #ff6b00, #f39c12); }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(5,7,15,0.85);
+    backdrop-filter: blur(6px);
+    z-index: 100;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.25s;
+  }
+  .modal-overlay.show { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    width: 90%; max-width: 480px;
+    position: relative;
+    transform: scale(0.94) translateY(20px);
+    transition: transform 0.25s;
+    overflow: hidden;
+  }
+  .modal-overlay.show .modal { transform: scale(1) translateY(0); }
+  .modal-header {
+    padding: 2rem 2rem 1.5rem;
+    background: linear-gradient(135deg, var(--surface2), #1a1e32);
+    text-align: center;
+    position: relative;
+  }
+  .modal-close {
+    position: absolute; top: 1rem; right: 1rem;
+    background: var(--border);
+    border: none; color: var(--text-muted);
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    cursor: pointer; font-size: 1.1rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .modal-close:hover { background: var(--red); color: white; }
+  .modal-avatar {
+    width: 96px; height: 96px;
+    border-radius: 50%;
+    margin: 0 auto 1rem;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3rem;
+    border: 3px solid var(--border);
+  }
+  .modal-flag { font-size: 2rem; margin-bottom: 0.5rem; }
+  .modal-name {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.6rem; font-weight: 600;
+  }
+  .modal-role {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 3px 12px; border-radius: 20px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    margin-top: 0.5rem;
+  }
+  .modal-body {
+    padding: 1.5rem 2rem 2rem;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .modal-field {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+  }
+  .modal-field-label {
+    font-size: 0.65rem; text-transform: uppercase;
+    letter-spacing: 0.12em; color: var(--text-muted);
+    margin-bottom: 0.3rem;
+  }
+  .modal-field-value {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1rem; font-weight: 600;
+  }
+  .modal-field.full { grid-column: 1/-1; }
+
+  /* NO RESULTS */
+  .no-results {
+    text-align: center; padding: 4rem 2rem;
+    color: var(--text-muted);
+    grid-column: 1/-1;
+  }
+  .no-results-icon { font-size: 3rem; margin-bottom: 1rem; }
+  .no-results h3 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.3rem; color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+  @media (max-width: 600px) {
+    .header-stats { display: none; }
+    .controls-inner { gap: 0.6rem; }
+    main { padding: 1rem; }
+    #players-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">🏏</div>
+      <div>
+        <div class="logo-text">MLC <span>Players</span> Hub</div>
+        <div class="logo-sub">Major League Cricket · Official Roster</div>
+      </div>
+    </div>
+    <div class="header-stats">
+      <div class="hstat">
+        <div class="hstat-num" id="total-count">253</div>
+        <div class="hstat-label">Players</div>
+      </div>
+      <div class="hstat-sep"></div>
+      <div class="hstat">
+        <div class="hstat-num">12</div>
+        <div class="hstat-label">Teams</div>
+      </div>
+      <div class="hstat-sep"></div>
+      <div class="hstat">
+        <div class="hstat-num">14</div>
+        <div class="hstat-label">Nations</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="controls-wrap">
+  <div class="controls-inner">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search" placeholder="Search players by name…">
+    </div>
+    <select id="filter-role">
+      <option value="">All Roles</option>
+      <option value="batter">Batter</option>
+      <option value="bowler">Bowler</option>
+      <option value="allrounder">All-rounder</option>
+      <option value="wicketkeeper">Wicketkeeper</option>
+    </select>
+    <select id="filter-nation">
+      <option value="">All Nationalities</option>
+	  <option value="Afghan">🇦🇫 Afghani</option>
+      <option value="Australian">🇦🇺 Australian</option>
+      <option value="Bangladeshi">🇧🇩 Bangladeshi</option>
+	  <option value="Dutch">🇳🇱 Dutch</option>
+      <option value="English/British">🏴󠁧󠁢󠁥󠁮󠁧󠁿 English/British</option>
+      <option value="Irish">🇮🇪 Irish</option>
+      <option value="Kiwis">🇳🇿 New Zealand</option>
+      <option value="Pakistani">🇵🇰 Pakistani</option>
+      <option value="South African">🇿🇦 South African</option>
+	  <option value="Sri Lankan">🇱🇰 Sri Lanka</option>
+	  <option value="Scottish">🏴󠁧󠁢󠁳󠁣󠁴󠁿 Scottish</option>
+      <option value="West Indian">🌴 West Indian</option>
+      <option value="American">🇺🇸 American</option>
+	  <option value="Zimbabwean">🇿🇼 Zimbabwean</option>
+    </select>
+    <select id="sort-by">
+      <option value="name">Sort: Name A–Z</option>
+      <option value="jersey">Sort: Jersey #</option>
+      <option value="dob">Sort: Youngest</option>
+    </select>
+    <div class="view-toggle">
+      <button class="view-btn active" id="grid-btn" title="Grid View">⊞</button>
+      <button class="view-btn" id="list-btn" title="List View">☰</button>
+    </div>
+    <div class="results-count"><span id="shown-count">253</span> players shown</div>
+  </div>
+</div>
+
+<div class="team-tabs-wrap">
+  <div class="team-tabs" id="team-tabs"></div>
+</div>
+
+<main>
+  <div id="players-grid"></div>
+</main>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <button class="modal-close" id="modal-close">✕</button>
+      <div class="modal-flag" id="m-flag"></div>
+      <div class="modal-avatar" id="m-avatar">👤</div>
+      <div class="modal-name" id="m-name"></div>
+      <div class="modal-role" id="m-role"></div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-field">
+        <div class="modal-field-label">Jersey No.</div>
+        <div class="modal-field-value" id="m-jersey"></div>
+      </div>
+      <div class="modal-field">
+        <div class="modal-field-label">Nationality</div>
+        <div class="modal-field-value" id="m-nationality"></div>
+      </div>
+      <div class="modal-field full">
+        <div class="modal-field-label">Team</div>
+        <div class="modal-field-value" id="m-team"></div>
+      </div>
+      <div class="modal-field">
+        <div class="modal-field-label">Date of Birth</div>
+        <div class="modal-field-value" id="m-dob"></div>
+      </div>
+      <div class="modal-field">
+        <div class="modal-field-label">Age</div>
+        <div class="modal-field-value" id="m-age"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const PLAYERS = [
+  {jersey:49,name:"Steve Smith",role:"Batter",team:"LAS VEGAS PHANTOMS",nation:"Australian",dob:"1989-06-02"},
+  {jersey:30,name:"Pat Cummins",role:"Bowler",team:"NEW ORLEANS THUNDERS",nation:"Australian",dob:"1993-05-08"},
+  {jersey:3,name:"Marnus Labuschagne",role:"Batter",team:"ATLANTA GLADIATORS",nation:"Australian",dob:"1994-06-22"},
+  {jersey:34,name:"Travis Head",role:"Batter",team:"LOS ANGELES LIONS",nation:"Australian",dob:"1993-12-29"},
+  {jersey:48,name:"Alex Carey",role:"Wicketkeeper",team:"CHICAGO CRUSHERS",nation:"Australian",dob:"1991-08-27"},
+  {jersey:62,name:"Mitchell Starc",role:"Bowler",team:"MIAMI MAVERICKS",nation:"Australian",dob:"1990-01-30"},
+  {jersey:11,name:"Josh Hazlewood",role:"Bowler",team:"OHIO WOLVES",nation:"Australian",dob:"1991-01-25"},
+  {jersey:32,name:"David Warner",role:"Batter",team:"TEXAS KINGS",nation:"Australian",dob:"1986-10-27"},
+  {jersey:31,name:"Glenn Maxwell",role:"All-rounder",team:"NEW YORK STRIKERS",nation:"Australian",dob:"1988-10-14"},
+  {jersey:17,name:"Marcus Stoinis",role:"All-rounder",team:"NEW ORLEANS THUNDERS",nation:"Australian",dob:"1989-08-16"},
+  {jersey:13,name:"Adam Zampa",role:"Bowler",team:"CHICAGO CRUSHERS",nation:"Australian",dob:"1992-03-31"},
+  {jersey:20,name:"Mitchell Marsh",role:"All-rounder",team:"NASHVILLE KNIGHTS",nation:"Australian",dob:"1991-10-20"},
+  {jersey:46,name:"Josh Inglis",role:"Wicketkeeper",team:"ATLANTA GLADIATORS",nation:"Australian",dob:"1995-03-04"},
+  {jersey:41,name:"Cameron Green",role:"All-rounder",team:"WASHINGTON EAGLES",nation:"Australian",dob:"1999-06-06"},
+  {jersey:59,name:"Sean Abbott",role:"All-rounder",team:"HOUSTON SIXXERS",nation:"Australian",dob:"1992-01-29"},
+  {jersey:85,name:"Tim David",role:"Batter",team:"MIAMI MAVERICKS",nation:"Australian",dob:"1996-03-16"},
+  {jersey:75,name:"Shakib Al Hasan (C)",role:"All-rounder",team:"TEXAS KINGS",nation:"Bangladeshi",dob:"1987-03-24"},
+  {jersey:28,name:"Tamim Iqbal",role:"Batter",team:"ATLANTA GLADIATORS",nation:"Bangladeshi",dob:"1989-03-20"},
+  {jersey:90,name:"Mustafizur Rahman",role:"Bowler",team:"WASHINGTON EAGLES",nation:"Bangladeshi",dob:"1995-09-06"},
+  {jersey:16,name:"Litton Das",role:"Wicketkeeper",team:"CHICAGO CRUSHERS",nation:"Bangladeshi",dob:"1994-10-13"},
+  {jersey:47,name:"Taskin Ahmed",role:"Bowler",team:"OHIO WOLVES",nation:"Bangladeshi",dob:"1995-04-03"},
+  {jersey:99,name:"Najmul Hossain Shanto",role:"Batter",team:"NEW ORLEANS THUNDERS",nation:"Bangladeshi",dob:"1998-09-25"},
+  {jersey:53,name:"Mehidy Hasan Miraz",role:"All-rounder",team:"LOS ANGELES LIONS",nation:"Bangladeshi",dob:"1997-10-25"},
+  {jersey:7,name:"Towhid Hridoy",role:"Batter",team:"MIAMI MAVERICKS",nation:"Bangladeshi",dob:"2000-12-04"},
+  {jersey:59,name:"Shoriful Islam",role:"Bowler",team:"NEW YORK STRIKERS",nation:"Bangladeshi",dob:"2001-06-03"},
+  {jersey:6,name:"Nasum Ahmed",role:"Bowler",team:"NASHVILLE KNIGHTS",nation:"Bangladeshi",dob:"1994-12-05"},
+  {jersey:97,name:"Tanzid Hasan Tamim",role:"Batter",team:"HOUSTON SIXXERS",nation:"Bangladeshi",dob:"2000-12-01"},
+  {jersey:41,name:"Tanzim Hasan Sakib",role:"Bowler",team:"WASHINGTON EAGLES",nation:"Bangladeshi",dob:"2002-10-20"},
+  {jersey:35,name:"Rishad Hossain",role:"Bowler",team:"LAS VEGAS PHANTOMS",nation:"Bangladeshi",dob:"1998-07-15"},
+  {jersey:66,name:"Joe Root",role:"Batter",team:"LAS VEGAS PHANTOMS",nation:"English/British",dob:"1990-12-30"},
+  {jersey:55,name:"Ben Stokes",role:"All-rounder",team:"NEW ORLEANS THUNDERS",nation:"English/British",dob:"1991-06-04"},
+  {jersey:88,name:"Harry Brook",role:"Batter",team:"ATLANTA GLADIATORS",nation:"English/British",dob:"1999-02-22"},
+  {jersey:63,name:"Jos Buttler",role:"Wicketkeeper",team:"OHIO WOLVES",nation:"English/British",dob:"1990-09-08"},
+  {jersey:15,name:"Jofra Archer",role:"Bowler",team:"LOS ANGELES LIONS",nation:"English/British",dob:"1995-04-01"},
+  {jersey:58,name:"Sam Curran",role:"All-rounder",team:"WASHINGTON EAGLES",nation:"English/British",dob:"1998-06-03"},
+  {jersey:18,name:"Moeen Ali",role:"All-rounder",team:"TEXAS KINGS",nation:"English/British",dob:"1987-06-18"},
+  {jersey:23,name:"Liam Livingstone",role:"All-rounder",team:"LOS ANGELES LIONS",nation:"English/British",dob:"1993-08-04"},
+  {jersey:19,name:"Mark Wood",role:"Bowler",team:"NASHVILLE KNIGHTS",nation:"English/British",dob:"1990-01-11"},
+  {jersey:14,name:"Jonny Bairstow",role:"Wicketkeeper",team:"MIAMI MAVERICKS",nation:"English/British",dob:"1989-09-26"},
+  {jersey:95,name:"Adil Rashid",role:"Bowler",team:"NEW YORK STRIKERS",nation:"English/British",dob:"1988-02-17"},
+  {jersey:17,name:"Chris Woakes",role:"All-rounder",team:"TEXAS KINGS",nation:"English/British",dob:"1989-03-02"},
+  {jersey:35,name:"Reece Topley",role:"Bowler",team:"HOUSTON SIXXERS",nation:"English/British",dob:"1994-02-21"},
+  {jersey:53,name:"Phil Salt",role:"Wicketkeeper",team:"CHICAGO CRUSHERS",nation:"English/British",dob:"1996-08-28"},
+  {jersey:45,name:"Dawid Malan",role:"Batter",team:"NASHVILLE KNIGHTS",nation:"English/British",dob:"1987-09-03"},
+  {jersey:74,name:"Paul Stirling",role:"All-rounder",team:"WASHINGTON EAGLES",nation:"Irish",dob:"1990-09-03"},
+  {jersey:17,name:"Andrew Balbirnie",role:"Batter",team:"NASHVILLE KNIGHTS",nation:"Irish",dob:"1990-12-28"},
+  {jersey:4,name:"Harry Tector",role:"Batter",team:"MIAMI MAVERICKS",nation:"Irish",dob:"1999-12-06"},
+  {jersey:5,name:"George Dockrell",role:"All-rounder",team:"LOS ANGELES LIONS",nation:"Irish",dob:"1992-07-08"},
+  {jersey:10,name:"Joshua Little",role:"Bowler",team:"LAS VEGAS PHANTOMS",nation:"Irish",dob:"1999-11-01"},
+  {jersey:7,name:"Mark Adair",role:"Bowler",team:"HOUSTON SIXXERS",nation:"Irish",dob:"1996-03-31"},
+  {jersey:8,name:"Craig Young",role:"Bowler",team:"NEW ORLEANS THUNDERS",nation:"Irish",dob:"1990-05-04"},
+  {jersey:29,name:"Andrew McBrine",role:"All-rounder",team:"TEXAS KINGS",nation:"Irish",dob:"1993-04-30"},
+  {jersey:13,name:"Stephen Doheny",role:"Wicketkeeper",team:"ATLANTA GLADIATORS",nation:"Irish",dob:"1998-08-20"},
+  {jersey:9,name:"Graham Hume",role:"Bowler",team:"ATLANTA GLADIATORS",nation:"Irish",dob:"1991-06-16"},
+  {jersey:22,name:"Kane Williamson (C)",role:"Batter",team:"ATLANTA GLADIATORS",nation:"Kiwis",dob:"1990-08-08"},
+  {jersey:38,name:"Trent Boult",role:"Bowler",team:"OHIO WOLVES",nation:"Kiwis",dob:"1989-07-22"},
+  {jersey:50,name:"Devon Conway",role:"Wicketkeeper",team:"LAS VEGAS PHANTOMS",nation:"Kiwis",dob:"1991-07-08"},
+  {jersey:88,name:"Daryl Mitchell",role:"All-rounder",team:"HOUSTON SIXXERS",nation:"Kiwis",dob:"1991-05-20"},
+  {jersey:55,name:"Glenn Phillips",role:"All-rounder",team:"CHICAGO CRUSHERS",nation:"Kiwis",dob:"1996-12-06"},
+  {jersey:79,name:"Tom Latham",role:"Wicketkeeper",team:"WASHINGTON EAGLES",nation:"Kiwis",dob:"1992-04-02"},
+  {jersey:17,name:"Tim Southee",role:"Bowler",team:"NEW ORLEANS THUNDERS",nation:"Kiwis",dob:"1988-12-11"},
+  {jersey:74,name:"Rachin Ravindra",role:"All-rounder",team:"TEXAS KINGS",nation:"Kiwis",dob:"1999-11-18"},
+  {jersey:23,name:"Kyle Jamieson",role:"Bowler",team:"MIAMI MAVERICKS",nation:"Kiwis",dob:"1994-12-30"},
+  {jersey:45,name:"Lockie Ferguson",role:"Bowler",team:"NASHVILLE KNIGHTS",nation:"Kiwis",dob:"1991-06-13"},
+  {jersey:46,name:"Mark Chapman",role:"Batter",team:"NEW ORLEANS THUNDERS",nation:"Kiwis",dob:"1994-06-27"},
+  {jersey:16,name:"Will Young",role:"Batter",team:"NASHVILLE KNIGHTS",nation:"Kiwis",dob:"1992-11-22"},
+  {jersey:20,name:"Mitchell Santner",role:"All-rounder",team:"TEXAS KINGS",nation:"Kiwis",dob:"1992-02-05"},
+  {jersey:1,name:"Matt Henry",role:"Bowler",team:"NEW YORK STRIKERS",nation:"Kiwis",dob:"1991-12-14"},
+  {jersey:50,name:"James Neesham",role:"All-rounder",team:"LOS ANGELES LIONS",nation:"Kiwis",dob:"1990-09-17"},
+  {jersey:56,name:"Babar Azam",role:"Batter",team:"HOUSTON SIXXERS",nation:"Pakistani",dob:"1994-10-15"},
+  {jersey:10,name:"Shaheen Afridi",role:"Bowler",team:"HOUSTON SIXXERS",nation:"Pakistani",dob:"2000-04-06"},
+  {jersey:8,name:"Mohammad Rizwan",role:"Wicketkeeper",team:"HOUSTON SIXXERS",nation:"Pakistani",dob:"1992-06-01"},
+  {jersey:39,name:"Fakhar Zaman",role:"Batter",team:"NASHVILLE KNIGHTS",nation:"Pakistani",dob:"1990-04-10"},
+  {jersey:18,name:"Haris Rauf",role:"Bowler",team:"CHICAGO CRUSHERS",nation:"Pakistani",dob:"1993-11-07"},
+  {jersey:7,name:"Shadab Khan",role:"All-rounder",team:"ATLANTA GLADIATORS",nation:"Pakistani",dob:"1998-10-04"},
+  {jersey:3,name:"Hasan Ali",role:"Bowler",team:"OHIO WOLVES",nation:"Pakistani",dob:"1994-07-02"},
+  {jersey:20,name:"Mohammad Nawaz",role:"All-rounder",team:"TEXAS KINGS",nation:"Pakistani",dob:"1994-03-21"},
+  {jersey:41,name:"Abdullah Shafique",role:"Batter",team:"MIAMI MAVERICKS",nation:"Pakistani",dob:"1999-11-20"},
+  {jersey:99,name:"Abrar Ahmed",role:"Bowler",team:"LOS ANGELES LIONS",nation:"Pakistani",dob:"1998-10-16"},
+  {jersey:67,name:"Saud Shakeel",role:"Batter",team:"NEW ORLEANS THUNDERS",nation:"Pakistani",dob:"1995-09-05"},
+  {jersey:14,name:"Mohammad Wasim Jr.",role:"Bowler",team:"WASHINGTON EAGLES",nation:"Pakistani",dob:"2001-08-25"},
+  {jersey:67,name:"Salman Ali Agha",role:"All-rounder",team:"LAS VEGAS PHANTOMS",nation:"Pakistani",dob:"1993-11-23"},
+  {jersey:63,name:"Saim Ayub",role:"Batter",team:"NEW YORK STRIKERS",nation:"Pakistani",dob:"2002-05-24"},
+  {jersey:1,name:"Aiden Markram",role:"Batter",team:"CHICAGO CRUSHERS",nation:"South African",dob:"1994-10-04"},
+  {jersey:25,name:"Quinton de Kock",role:"Wicketkeeper",team:"NEW YORK STRIKERS",nation:"South African",dob:"1992-12-17"},
+  {jersey:23,name:"David Miller",role:"Batter",team:"LOS ANGELES LIONS",nation:"South African",dob:"1989-06-10"},
+  {jersey:9,name:"Heinrich Klaasen",role:"Wicketkeeper",team:"MIAMI MAVERICKS",nation:"South African",dob:"1991-07-30"},
+  {jersey:43,name:"Kagiso Rabada",role:"Bowler",team:"OHIO WOLVES",nation:"South African",dob:"1995-05-25"},
+  {jersey:20,name:"Lungi Ngidi",role:"Bowler",team:"LAS VEGAS PHANTOMS",nation:"South African",dob:"1996-03-29"},
+  {jersey:10,name:"Keshav Maharaj",role:"Bowler",team:"HOUSTON SIXXERS",nation:"South African",dob:"1990-02-07"},
+  {jersey:50,name:"Tabraiz Shamsi",role:"Bowler",team:"LOS ANGELES LIONS",nation:"South African",dob:"1990-02-18"},
+  {jersey:17,name:"Rassie van der Dussen",role:"Batter",team:"OHIO WOLVES",nation:"South African",dob:"1989-02-07"},
+  {jersey:65,name:"Marco Jansen",role:"All-rounder",team:"TEXAS KINGS",nation:"South African",dob:"2000-05-01"},
+  {jersey:35,name:"Gerald Coetzee",role:"Bowler",team:"WASHINGTON EAGLES",nation:"South African",dob:"2000-10-02"},
+  {jersey:8,name:"Reeza Hendricks",role:"Batter",team:"NEW ORLEANS THUNDERS",nation:"South African",dob:"1989-08-14"},
+  {jersey:19,name:"Tristan Stubbs",role:"Wicketkeeper",team:"ATLANTA GLADIATORS",nation:"South African",dob:"2000-08-14"},
+  {jersey:26,name:"Anrich Nortje",role:"Bowler",team:"TEXAS KINGS",nation:"South African",dob:"1993-11-16"},
+  {jersey:25,name:"Shai Hope",role:"Wicketkeeper",team:"CHICAGO CRUSHERS",nation:"West Indian",dob:"1993-11-10"},
+  {jersey:85,name:"Nicholas Pooran",role:"Wicketkeeper",team:"NASHVILLE KNIGHTS",nation:"West Indian",dob:"1995-10-02"},
+  {jersey:13,name:"Brandon King",role:"Batter",team:"OHIO WOLVES",nation:"West Indian",dob:"1994-12-16"},
+  {jersey:19,name:"Rovman Powell",role:"All-rounder",team:"WASHINGTON EAGLES",nation:"West Indian",dob:"1993-07-23"},
+  {jersey:12,name:"Shimron Hetmyer",role:"Batter",team:"MIAMI MAVERICKS",nation:"West Indian",dob:"1996-12-26"},
+  {jersey:47,name:"Andre Russell",role:"All-rounder",team:"NEW YORK STRIKERS",nation:"West Indian",dob:"1988-04-29"},
+  {jersey:15,name:"Jason Holder",role:"All-rounder",team:"MIAMI MAVERICKS",nation:"West Indian",dob:"1991-11-05"},
+  {jersey:6,name:"Romario Shepherd",role:"All-rounder",team:"LOS ANGELES LIONS",nation:"West Indian",dob:"1994-11-26"},
+  {jersey:35,name:"Kyle Mayers",role:"All-rounder",team:"TEXAS KINGS",nation:"West Indian",dob:"1992-09-02"},
+  {jersey:59,name:"Alzarri Joseph",role:"Bowler",team:"HOUSTON SIXXERS",nation:"West Indian",dob:"1996-11-20"},
+  {jersey:45,name:"Akeal Hosein",role:"Bowler",team:"NEW ORLEANS THUNDERS",nation:"West Indian",dob:"1993-04-25"},
+  {jersey:41,name:"Obed McCoy",role:"Bowler",team:"ATLANTA GLADIATORS",nation:"West Indian",dob:"1997-01-04"},
+  {jersey:5,name:"Johnson Charles",role:"Wicketkeeper",team:"LAS VEGAS PHANTOMS",nation:"West Indian",dob:"1989-01-14"},
+  {jersey:98,name:"Gudakesh Motie",role:"Bowler",team:"HOUSTON SIXXERS",nation:"West Indian",dob:"1995-03-29"},
+  {jersey:74,name:"Sherfane Rutherford",role:"Batter",team:"NASHVILLE KNIGHTS",nation:"West Indian",dob:"1998-08-15"},
+  {jersey:9,name:"John Orlando (C)",role:"Batter",team:"NEW YORK STRIKERS",nation:"American",dob:"1996-03-15"},
+  {jersey:11,name:"Jake Carson (C)",role:"Batter",team:"OHIO WOLVES",nation:"American",dob:"1998-08-20"},
+  {jersey:52,name:"Jake Ryan (C)",role:"Batter",team:"NEW ORLEANS THUNDERS",nation:"American",dob:"1999-01-10"},
+  {jersey:80,name:"Jason Charles (C)",role:"Batter",team:"CHICAGO CRUSHERS",nation:"American",dob:"1991-05-03"},
+  {jersey:13,name:"Jayden Morgan",role:"Batter",team:"ATLANTA GLADIATORS",nation:"American",dob:"1998-04-18"},
+  {jersey:21,name:"Nathan Levi",role:"Batter",team:"LOS ANGELES LIONS",nation:"American",dob:"2000-07-22"},
+  {jersey:60,name:"Liam King",role:"Batter",team:"OHIO WOLVES",nation:"American",dob:"2001-09-05"},
+  {jersey:22,name:"Landon Campbell (C)",role:"Batter",team:"HOUSTON SIXXERS",nation:"American",dob:"2000-11-29"},
+  {jersey:31,name:"Daniel White",role:"Batter",team:"TEXAS KINGS",nation:"American",dob:"1995-02-14"},
+  {jersey:10,name:"Sherlock Miller",role:"Batter",team:"WASHINGTON EAGLES",nation:"American",dob:"1994-06-25"},
+  {jersey:96,name:"Cameron Finn",role:"Batter",team:"OHIO WOLVES",nation:"American",dob:"1996-08-01"},
+  {jersey:41,name:"Cristian Owens",role:"Batter",team:"HOUSTON SIXXERS",nation:"American",dob:"1993-01-19"},
+  {jersey:40,name:"Jakob Infield",role:"Batter",team:"NEW ORLEANS THUNDERS",nation:"American",dob:"2000-03-08"},
+  {jersey:73,name:"Mason Graham",role:"Batter",team:"NASHVILLE KNIGHTS",nation:"American",dob:"1995-09-12"},
+  {jersey:85,name:"Aaron Jones",role:"Batter",team:"WASHINGTON EAGLES",nation:"American",dob:"1995-04-27"},
+  {jersey:27,name:"David Earps",role:"Batter",team:"NASHVILLE KNIGHTS",nation:"American",dob:"2002-05-30"},
+  {jersey:13,name:"Michael Willy",role:"Batter",team:"HOUSTON SIXXERS",nation:"American",dob:"2001-12-11"},
+  {jersey:60,name:"Simon Mendell",role:"Batter",team:"LAS VEGAS PHANTOMS",nation:"American",dob:"1998-07-07"},
+  {jersey:271,name:"Leonardo D'Angelo (C)",role:"Batter",team:"WASHINGTON EAGLES",nation:"American",dob:"1994-03-24"},
+  {jersey:19,name:"Kendrick Spencer",role:"Batter",team:"NEW YORK STRIKERS",nation:"American",dob:"2003-10-16"},
+  {jersey:20,name:"Liam Arthur",role:"Batter",team:"MIAMI MAVERICKS",nation:"American",dob:"2004-06-09"},
+  {jersey:25,name:"Joshua Kelvin",role:"Batter",team:"LOS ANGELES LIONS",nation:"American",dob:"1999-08-04"},
+  {jersey:74,name:"Scott Calvin",role:"Batter",team:"CHICAGO CRUSHERS",nation:"American",dob:"1996-02-28"},
+  {jersey:4,name:"Josh Edward",role:"Batter",team:"ATLANTA GLADIATORS",nation:"American",dob:"2002-01-26"},
+  {jersey:19,name:"Brandon Watson",role:"Batter",team:"TEXAS KINGS",nation:"American",dob:"1997-05-18"},
+  {jersey:82,name:"Darren Paul",role:"Batter",team:"NEW ORLEANS THUNDERS",nation:"American",dob:"2005-03-02"},
+  {jersey:10,name:"Austin Walker (C)",role:"Wicketkeeper",team:"MIAMI MAVERICKS",nation:"American",dob:"1997-01-05"},
+  {jersey:1,name:"Adam Blake",role:"Wicketkeeper",team:"LOS ANGELES LIONS",nation:"American",dob:"2000-02-17"},
+  {jersey:33,name:"Isaac Watson",role:"Wicketkeeper",team:"CHICAGO CRUSHERS",nation:"American",dob:"1995-07-09"},
+  {jersey:1,name:"Charles Paterson",role:"Wicketkeeper",team:"ATLANTA GLADIATORS",nation:"American",dob:"2006-08-11"},
+  {jersey:61,name:"Jack Carter",role:"Wicketkeeper",team:"TEXAS KINGS",nation:"American",dob:"1998-05-25"},
+  {jersey:56,name:"Lucas Stewart",role:"Wicketkeeper",team:"LAS VEGAS PHANTOMS",nation:"American",dob:"2000-06-13"},
+  {jersey:26,name:"Samuel Deacon",role:"Wicketkeeper",team:"OHIO WOLVES",nation:"American",dob:"2000-09-02"},
+  {jersey:15,name:"Anthony Clayton",role:"Wicketkeeper",team:"WASHINGTON EAGLES",nation:"American",dob:"1992-04-21"},
+  {jersey:9,name:"Weston Creste",role:"Wicketkeeper",team:"NASHVILLE KNIGHTS",nation:"American",dob:"1995-06-19"},
+  {jersey:15,name:"Chris Edean",role:"Wicketkeeper",team:"HOUSTON SIXXERS",nation:"American",dob:"2007-01-28"},
+  {jersey:51,name:"Martin Yaman",role:"Wicketkeeper",team:"NEW YORK STRIKERS",nation:"American",dob:"2005-07-03"},
+  {jersey:30,name:"Darius Cooper",role:"Wicketkeeper",team:"LOS ANGELES LIONS",nation:"American",dob:"2003-03-12"},
+  {jersey:200,name:"Celeso Martinez",role:"Wicketkeeper",team:"CHICAGO CRUSHERS",nation:"American",dob:"2000-04-29"},
+  {jersey:31,name:"Devin Hugo",role:"Wicketkeeper",team:"ATLANTA GLADIATORS",nation:"American",dob:"1995-08-08"},
+  {jersey:37,name:"Kevin Hustler",role:"Wicketkeeper",team:"NEW YORK STRIKERS",nation:"American",dob:"2004-11-06"},
+  {jersey:12,name:"Kaiser Hossain",role:"Wicketkeeper",team:"TEXAS KINGS",nation:"American",dob:"1999-03-14"},
+  {jersey:67,name:"Mark Weah",role:"Wicketkeeper",team:"LAS VEGAS PHANTOMS",nation:"American",dob:"2001-10-23"},
+  {jersey:7,name:"Galib Rashik (C)",role:"All-rounder",team:"LOS ANGELES LIONS",nation:"American",dob:"1999-01-05"},
+  {jersey:8,name:"Alex Hunter",role:"All-rounder",team:"LOS ANGELES LIONS",nation:"American",dob:"1999-04-19"},
+  {jersey:36,name:"Logan Tyler (C)",role:"All-rounder",team:"LAS VEGAS PHANTOMS",nation:"American",dob:"2000-08-25"},
+  {jersey:35,name:"Mark Wesley",role:"All-rounder",team:"OHIO WOLVES",nation:"American",dob:"1998-03-07"},
+  {jersey:17,name:"Noah Alexander (C)",role:"All-rounder",team:"NASHVILLE KNIGHTS",nation:"American",dob:"1999-02-20"},
+  {jersey:10,name:"Adrian Roger",role:"All-rounder",team:"NEW ORLEANS THUNDERS",nation:"American",dob:"1994-09-17"},
+  {jersey:22,name:"Benjamin Morgan",role:"All-rounder",team:"HOUSTON SIXXERS",nation:"American",dob:"1991-03-04"},
+  {jersey:61,name:"Benjamin Miller",role:"All-rounder",team:"MIAMI MAVERICKS",nation:"American",dob:"2001-08-14"},
+  {jersey:33,name:"Lincoln Murphy",role:"All-rounder",team:"CHICAGO CRUSHERS",nation:"American",dob:"2007-05-21"},
+  {jersey:98,name:"Dylan Cook",role:"All-rounder",team:"ATLANTA GLADIATORS",nation:"American",dob:"2003-02-09"},
+  {jersey:75,name:"Tony Cruz",role:"All-rounder",team:"WASHINGTON EAGLES",nation:"American",dob:"2004-03-01"},
+  {jersey:12,name:"Jacob Collins",role:"All-rounder",team:"NASHVILLE KNIGHTS",nation:"American",dob:"2000-01-23"},
+  {jersey:63,name:"Kim Brooks",role:"All-rounder",team:"NEW YORK STRIKERS",nation:"American",dob:"1994-08-10"},
+  {jersey:10,name:"Parker Morales",role:"All-rounder",team:"TEXAS KINGS",nation:"American",dob:"2001-07-15"},
+  {jersey:67,name:"Christopher Nelson",role:"All-rounder",team:"LAS VEGAS PHANTOMS",nation:"American",dob:"1998-06-18"},
+  {jersey:28,name:"Michael Jones",role:"All-rounder",team:"OHIO WOLVES",nation:"American",dob:"1996-03-29"},
+  {jersey:68,name:"Oliver Smith",role:"All-rounder",team:"NEW ORLEANS THUNDERS",nation:"American",dob:"1996-05-16"},
+  {jersey:40,name:"Ryan Brooks",role:"All-rounder",team:"WASHINGTON EAGLES",nation:"American",dob:"1995-01-05"},
+  {jersey:85,name:"Luke Diaz",role:"All-rounder",team:"MIAMI MAVERICKS",nation:"American",dob:"2005-02-06"},
+  {jersey:97,name:"Ethan Winter",role:"All-rounder",team:"CHICAGO CRUSHERS",nation:"American",dob:"1990-12-08"},
+  {jersey:86,name:"Steven Taylor",role:"All-rounder",team:"ATLANTA GLADIATORS",nation:"American",dob:"1994-02-22"},
+  {jersey:22,name:"Ian Holland",role:"All-rounder",team:"HOUSTON SIXXERS",nation:"American",dob:"2000-09-08"},
+  {jersey:14,name:"Oliver Benford",role:"All-rounder",team:"TEXAS KINGS",nation:"American",dob:"2002-04-20"},
+  {jersey:81,name:"Scott Wilson",role:"All-rounder",team:"WASHINGTON EAGLES",nation:"American",dob:"2007-07-04"},
+  {jersey:69,name:"Trevor Hudson",role:"All-rounder",team:"NASHVILLE KNIGHTS",nation:"American",dob:"1997-01-24"},
+  {jersey:39,name:"Mason Noah",role:"All-rounder",team:"NEW YORK STRIKERS",nation:"American",dob:"2000-06-03"},
+  {jersey:60,name:"Charlie Walker",role:"All-rounder",team:"LAS VEGAS PHANTOMS",nation:"American",dob:"1999-01-12"},
+  {jersey:95,name:"Chris Henry",role:"All-rounder",team:"OHIO WOLVES",nation:"American",dob:"2009-08-16"},
+  {jersey:59,name:"Justin Parker",role:"All-rounder",team:"NEW ORLEANS THUNDERS",nation:"American",dob:"2002-12-05"},
+  {jersey:53,name:"Layne Cruz",role:"All-rounder",team:"LOS ANGELES LIONS",nation:"American",dob:"1999-07-27"},
+  {jersey:18,name:"Shelby",role:"All-rounder",team:"MIAMI MAVERICKS",nation:"American",dob:"1997-09-20"},
+  {jersey:95,name:"Daniel Mark",role:"All-rounder",team:"CHICAGO CRUSHERS",nation:"American",dob:"1996-01-21"},
+  {jersey:5,name:"Paul Heisenberg",role:"Bowler",team:"LOS ANGELES LIONS",nation:"American",dob:"2001-04-13"},
+  {jersey:29,name:"Timothee Anderson",role:"Bowler",team:"TEXAS KINGS",nation:"American",dob:"1999-05-07"},
+  {jersey:65,name:"Ali Osman",role:"Bowler",team:"WASHINGTON EAGLES",nation:"American",dob:"1994-03-09"},
+  {jersey:77,name:"Alisson McCall",role:"Bowler",team:"NASHVILLE KNIGHTS",nation:"American",dob:"2000-10-18"},
+  {jersey:23,name:"Ali Khan",role:"Bowler",team:"NEW YORK STRIKERS",nation:"American",dob:"1991-01-11"},
+  {jersey:80,name:"Caleb Chavez",role:"Bowler",team:"LAS VEGAS PHANTOMS",nation:"American",dob:"1994-07-29"},
+  {jersey:44,name:"Kyle Phillips",role:"Bowler",team:"HOUSTON SIXXERS",nation:"American",dob:"1996-06-15"},
+  {jersey:4,name:"Miles Cooper",role:"Bowler",team:"MIAMI MAVERICKS",nation:"American",dob:"1998-09-13"},
+  {jersey:66,name:"Nathan Gray",role:"Bowler",team:"ATLANTA GLADIATORS",nation:"American",dob:"2004-08-28"},
+  {jersey:92,name:"True Brian",role:"Bowler",team:"CHICAGO CRUSHERS",nation:"American",dob:"2002-02-24"},
+  {jersey:64,name:"Henry Gomez",role:"Bowler",team:"NEW ORLEANS THUNDERS",nation:"American",dob:"1997-03-06"},
+  {jersey:75,name:"James Morris",role:"Bowler",team:"ATLANTA GLADIATORS",nation:"American",dob:"2000-05-26"},
+  {jersey:83,name:"Leo Martinez",role:"Bowler",team:"TEXAS KINGS",nation:"American",dob:"1995-04-02"},
+  {jersey:92,name:"Owen Jackson",role:"Bowler",team:"WASHINGTON EAGLES",nation:"American",dob:"1998-08-03"},
+  {jersey:75,name:"Troy Anderson",role:"Bowler",team:"LOS ANGELES LIONS",nation:"American",dob:"2001-11-20"},
+  {jersey:27,name:"Rusty Theron",role:"Bowler",team:"NEW YORK STRIKERS",nation:"American",dob:"1995-05-19"},
+  {jersey:39,name:"Sam Hall",role:"Bowler",team:"NASHVILLE KNIGHTS",nation:"American",dob:"1996-07-21"},
+  {jersey:65,name:"Kyle Stroman",role:"Bowler",team:"OHIO WOLVES",nation:"American",dob:"1998-02-15"},
+  {jersey:39,name:"Oscar Blake",role:"Bowler",team:"HOUSTON SIXXERS",nation:"American",dob:"2001-03-03"},
+  {jersey:66,name:"Nathan Rexe",role:"Bowler",team:"MIAMI MAVERICKS",nation:"American",dob:"2007-04-17"},
+  {jersey:90,name:"Tom Aiden",role:"Bowler",team:"LAS VEGAS PHANTOMS",nation:"American",dob:"2006-03-25"},
+  {jersey:33,name:"Ray Niklas",role:"Bowler",team:"CHICAGO CRUSHERS",nation:"American",dob:"2001-05-10"},
+  {jersey:64,name:"Scott Marvin",role:"Bowler",team:"NEW ORLEANS THUNDERS",nation:"American",dob:"1990-10-09"},
+  {jersey:92,name:"Braydon Monk",role:"Bowler",team:"ATLANTA GLADIATORS",nation:"American",dob:"2004-10-04"},
+  {jersey:46,name:"Philip Scott",role:"Bowler",team:"TEXAS KINGS",nation:"American",dob:"2003-01-31"},
+  {jersey:95,name:"Erik Potter",role:"Bowler",team:"WASHINGTON EAGLES",nation:"American",dob:"1998-01-08"},
+  {jersey:46,name:"Frank Erick",role:"Bowler",team:"NASHVILLE KNIGHTS",nation:"American",dob:"2003-06-28"},
+  {jersey:47,name:"Fahim Reza",role:"Bowler",team:"LOS ANGELES LIONS",nation:"American",dob:"1994-09-03"},
+  {jersey:33,name:"Ian Bell",role:"Bowler",team:"LAS VEGAS PHANTOMS",nation:"American",dob:"2000-02-12"},
+  {jersey:37,name:"Elias Wyatt",role:"Bowler",team:"OHIO WOLVES",nation:"American",dob:"2002-08-06"},
+  {jersey:32,name:"Osman Rafiq",role:"Bowler",team:"NEW ORLEANS THUNDERS",nation:"American",dob:"2000-11-19"},
+  {jersey:72,name:"John Lopez",role:"Bowler",team:"NEW YORK STRIKERS",nation:"American",dob:"2004-01-25"},
+  {jersey:99,name:"Asher Allen",role:"Bowler",team:"MIAMI MAVERICKS",nation:"American",dob:"2005-08-17"},
+  {jersey:39,name:"Santiago Rodriguez",role:"Bowler",team:"CHICAGO CRUSHERS",nation:"American",dob:"1999-03-21"},
+  {jersey:64,name:"Billy Theron",role:"Bowler",team:"ATLANTA GLADIATORS",nation:"American",dob:"2002-10-14"},
+  {jersey:38,name:"Bradd Foster",role:"Bowler",team:"TEXAS KINGS",nation:"American",dob:"1992-03-17"},
+  {jersey:88,name:"Yasir Mohammad",role:"Bowler",team:"WASHINGTON EAGLES",nation:"American",dob:"1995-07-26"},
+  {jersey:65,name:"William Henry",role:"Bowler",team:"NASHVILLE KNIGHTS",nation:"American",dob:"1998-02-05"},
+  {jersey:73,name:"Shawn Skyler",role:"Bowler",team:"HOUSTON SIXXERS",nation:"American",dob:"2006-09-10"},
+  {jersey:86,name:"Zayden Lance",role:"Bowler",team:"NEW YORK STRIKERS",nation:"American",dob:"2005-04-01"},
+  {jersey:43,name:"Harry Nolan",role:"Bowler",team:"HOUSTON SIXXERS",nation:"American",dob:"2001-06-23"},
+  {jersey:55,name:"Wilson Ivan",role:"Bowler",team:"OHIO WOLVES",nation:"American",dob:"1996-10-25"},
+  {jersey:26,name:"Ian Robert",role:"Bowler",team:"LOS ANGELES LIONS",nation:"American",dob:"2004-12-01"},
+  {jersey:7,name:"Rashid Khan",role:"All-rounder",team:"NEW YORK STRIKERS",nation:"Afghan",dob:"1998-09-20"},
+  {jersey:12,name:"Mohammad Nabi",role:"All-rounder",team:"OHIO WOLVES",nation:"Afghan",dob:"1985-01-01"},
+  {jersey:3,name:"Rahmanullah Gurbaz",role:"Wicketkeeper",team:"LAS VEGAS PHANTOMS",nation:"Afghan",dob:"2001-11-28"},
+  {jersey:94,name:"Fazalhaq Farooqi",role:"Bowler",team:"NASHVILLE KNIGHTS",nation:"Afghan",dob:"2000-09-22"},
+  {jersey:22,name:"Mujeeb Ur Rahman",role:"Bowler",team:"MIAMI MAVERICKS",nation:"Afghan",dob:"2001-03-28"},
+  {jersey:15,name:"Ibrahim Zadran",role:"Batter",team:"CHICAGO CRUSHERS",nation:"Afghan",dob:"2001-12-12"},
+  {jersey:49,name:"Azmatullah Omarzai",role:"All-rounder",team:"TEXAS KINGS",nation:"Afghan",dob:"2000-03-24"},
+  {jersey:56,name:"Gulbadin Naib",role:"All-rounder",team:"WASHINGTON EAGLES",nation:"Afghan",dob:"1991-03-11"},
+  {jersey:42,name:"Kusal Mendis",role:"Wicketkeeper",team:"CHICAGO CRUSHERS",nation:"Sri Lankan",dob:"1995-02-02"},
+  {jersey:14,name:"Wanindu Hasaranga",role:"All-rounder",team:"MIAMI MAVERICKS",nation:"Sri Lankan",dob:"1997-07-29"},
+  {jersey:8,name:"Dasun Shanaka",role:"All-rounder",team:"NEW YORK STRIKERS",nation:"Sri Lankan",dob:"1991-09-09"},
+  {jersey:21,name:"Maheesh Theekshana",role:"Bowler",team:"LAS VEGAS PHANTOMS",nation:"Sri Lankan",dob:"1999-08-01"},
+  {jersey:70,name:"Angelo Mathews",role:"All-rounder",team:"TEXAS KINGS",nation:"Sri Lankan",dob:"1987-06-02"},
+  {jersey:19,name:"Pathum Nissanka",role:"Batter",team:"NASHVILLE KNIGHTS",nation:"Sri Lankan",dob:"1998-05-18"},
+  {jersey:91,name:"Charith Asalanka",role:"Batter",team:"OHIO WOLVES",nation:"Sri Lankan",dob:"1997-06-29"},
+  {jersey:5,name:"Dhananjaya de Silva",role:"All-rounder",team:"ATLANTA GLADIATORS",nation:"Sri Lankan",dob:"1991-09-06"},
+  {jersey:24,name:"George Munsey",role:"Batter",team:"TEXAS KINGS",nation:"Scottish",dob:"1992-02-09"},
+  {jersey:13,name:"Richie Berrington",role:"All-rounder",team:"NEW YORK STRIKERS",nation:"Scottish",dob:"1987-03-03"},
+  {jersey:37,name:"Matthew Cross",role:"Wicketkeeper",team:"NASHVILLE KNIGHTS",nation:"Scottish",dob:"1992-10-15"},
+  {jersey:19,name:"Max O'Dowd",role:"Batter",team:"HOUSTON SIXXERS",nation:"Dutch",dob:"1994-01-04"},
+  {jersey:38,name:"Bas de Leede",role:"All-rounder",team:"NEW ORLEANS THUNDERS",nation:"Dutch",dob:"1999-11-14"},
+  {jersey:27,name:"Logan van Beek",role:"All-rounder",team:"ATLANTA GLADIATORS",nation:"Dutch",dob:"1990-09-07"},
+  {jersey:11,name:"Scott Edwards",role:"Wicketkeeper",team:"LOS ANGELES LIONS",nation:"Dutch",dob:"1996-03-10"},
+  {jersey:41,name:"Paul van Meekeren",role:"Bowler",team:"OHIO WOLVES",nation:"Dutch",dob:"1993-02-18"},
+];
+
+const FLAGS = {
+  "Afghan":"🇦🇫","Australian":"🇦🇺","Bangladeshi":"🇧🇩","English/British":"🏴󠁧󠁢󠁥󠁮󠁧󠁿","Dutch":"🇳🇱",
+  "Irish":"🇮🇪","Kiwis":"🇳🇿","Pakistani":"🇵🇰",
+  "South African":"🇿🇦","Sri Lankan":"🇱🇰","Scottish":"🏴󠁧󠁢󠁳󠁣󠁴󠁿","West Indian":"🌴","American":"🇺🇸","Zimbabwean":"🇿🇼"
+};
+const ROLE_ICONS = {
+  "Batter":"🏏","Bowler":"⚡","All-rounder":"⭐","Wicketkeeper":"🧤"
+};
+const TEAM_CLASSES = {
+  "LAS VEGAS PHANTOMS":"team-lv","NEW ORLEANS THUNDERS":"team-no",
+  "ATLANTA GLADIATORS":"team-atl","LOS ANGELES LIONS":"team-la",
+  "CHICAGO CRUSHERS":"team-chi","MIAMI MAVERICKS":"team-mia",
+  "OHIO WOLVES":"team-ohio","TEXAS KINGS":"team-tex",
+  "NEW YORK STRIKERS":"team-ny","NASHVILLE KNIGHTS":"team-nash",
+  "WASHINGTON EAGLES":"team-was","HOUSTON SIXXERS":"team-hou"
+};
+const TEAM_SHORT = {
+  "LAS VEGAS PHANTOMS":"Las Vegas","NEW ORLEANS THUNDERS":"New Orleans",
+  "ATLANTA GLADIATORS":"Atlanta","LOS ANGELES LIONS":"Los Angeles",
+  "CHICAGO CRUSHERS":"Chicago","MIAMI MAVERICKS":"Miami",
+  "OHIO WOLVES":"Ohio","TEXAS KINGS":"Texas",
+  "NEW YORK STRIKERS":"New York","NASHVILLE KNIGHTS":"Nashville",
+  "WASHINGTON EAGLES":"Washington","HOUSTON SIXXERS":"Houston"
+};
+
+function normalizeRole(r) {
+  const s = r.toLowerCase();
+  if(s.includes('wicket')) return 'Wicketkeeper';
+  if(s.includes('all')) return 'All-rounder';
+  if(s.includes('bowl')) return 'Bowler';
+  if(s.includes('bat') || s.includes('batsman')) return 'Batter';
+  return r;
+}
+function roleClass(r){
+  const rn = normalizeRole(r);
+  if(rn==='Batter') return 'role-batter';
+  if(rn==='Bowler') return 'role-bowler';
+  if(rn==='All-rounder') return 'role-allrounder';
+  if(rn==='Wicketkeeper') return 'role-wicketkeeper';
+  return 'role-other';
+}
+function calcAge(dob){
+  const d = new Date(dob);
+  const now = new Date();
+  let age = now.getFullYear() - d.getFullYear();
+  const m = now.getMonth() - d.getMonth();
+  if(m<0||(m===0&&now.getDate()<d.getDate())) age--;
+  return age;
+}
+function formatDob(dob){
+  const d = new Date(dob);
+  return d.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+}
+
+const TEAMS = ["ALL",...Object.keys(TEAM_SHORT)];
+let currentTeam = "ALL";
+let isListView = false;
+
+// Build team tabs
+const tabsEl = document.getElementById('team-tabs');
+TEAMS.forEach(t => {
+  const cnt = t==='ALL'?PLAYERS.length:PLAYERS.filter(p=>p.team===t).length;
+  const tab = document.createElement('div');
+  tab.className='team-tab'+(t==='ALL'?' active':'');
+  tab.dataset.team = t;
+  tab.innerHTML = `${t==='ALL'?'All Teams':TEAM_SHORT[t]}<span class="tab-count">${cnt}</span>`;
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.team-tab').forEach(x=>x.classList.remove('active'));
+    tab.classList.add('active');
+    currentTeam = t;
+    renderPlayers();
+  });
+  tabsEl.appendChild(tab);
+});
+
+function renderPlayers(){
+  const search = document.getElementById('search').value.toLowerCase();
+  const roleF = document.getElementById('filter-role').value.toLowerCase();
+  const nationF = document.getElementById('filter-nation').value;
+  const sortF = document.getElementById('sort-by').value;
+
+  let filtered = PLAYERS.filter(p => {
+    const nr = normalizeRole(p.role);
+    const matchTeam = currentTeam==='ALL' || p.team===currentTeam;
+    const matchSearch = !search || p.name.toLowerCase().includes(search)||
+      p.team.toLowerCase().includes(search)||p.nation.toLowerCase().includes(search);
+    const matchRole = !roleF || nr.toLowerCase().includes(roleF)||
+      (roleF==='allrounder'&&nr.toLowerCase().includes('all'));
+    const matchNation = !nationF || p.nation===nationF;
+    return matchTeam&&matchSearch&&matchRole&&matchNation;
+  });
+
+  if(sortF==='name') filtered.sort((a,b)=>a.name.localeCompare(b.name));
+  else if(sortF==='jersey') filtered.sort((a,b)=>a.jersey-b.jersey);
+  else if(sortF==='dob') filtered.sort((a,b)=>new Date(b.dob)-new Date(a.dob));
+
+  const grid = document.getElementById('players-grid');
+  document.getElementById('shown-count').textContent = filtered.length;
+
+  if(isListView) grid.classList.add('list-view');
+  else grid.classList.remove('list-view');
+
+  if(filtered.length===0){
+    grid.innerHTML=`<div class="no-results"><div class="no-results-icon">🔍</div><h3>No players found</h3><p>Try adjusting your filters</p></div>`;
+    return;
+  }
+
+  grid.innerHTML = filtered.map((p,i)=>{
+    const nr = normalizeRole(p.role);
+    const flag = FLAGS[p.nation]||'🌍';
+    const teamCls = TEAM_CLASSES[p.team]||'team-lv';
+    const rc = roleClass(p.role);
+    const ri = ROLE_ICONS[nr]||'🏏';
+    const delay = Math.min(i*0.02,0.4);
+    return `<div class="player-card" style="animation-delay:${delay}s" onclick="openModal(${i},${JSON.stringify(filtered).indexOf(JSON.stringify(p))})" data-idx="${i}">
+      <div class="card-top">
+        <div class="card-jersey">No.<span>${p.jersey}</span></div>
+        <div class="card-flag">${flag}</div>
+        <div class="player-avatar ${teamCls}">👤</div>
+        <div class="card-name">${p.name}</div>
+      </div>
+      <div class="card-bottom">
+        <div class="card-role ${rc}">${ri} ${nr}</div>
+        <div class="card-team">${TEAM_SHORT[p.team]||p.team}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Attach click with correct player ref
+  grid.querySelectorAll('.player-card').forEach((card,i)=>{
+    card.onclick = () => openModal(filtered[i]);
+  });
+}
+
+function openModal(p){
+  const nr = normalizeRole(p.role);
+  const flag = FLAGS[p.nation]||'🌍';
+  const teamCls = TEAM_CLASSES[p.team]||'team-lv';
+  const rc = roleClass(p.role);
+  const ri = ROLE_ICONS[nr]||'🏏';
+  document.getElementById('m-flag').textContent = flag;
+  document.getElementById('m-avatar').className='modal-avatar '+teamCls;
+  document.getElementById('m-avatar').textContent='👤';
+  document.getElementById('m-name').textContent=p.name;
+  const roleEl=document.getElementById('m-role');
+  roleEl.textContent=ri+' '+nr;
+  roleEl.className='modal-role '+rc;
+  document.getElementById('m-jersey').textContent='#'+p.jersey;
+  document.getElementById('m-nationality').textContent=flag+' '+p.nation;
+  document.getElementById('m-team').textContent=p.team;
+  document.getElementById('m-dob').textContent=formatDob(p.dob);
+  document.getElementById('m-age').textContent=calcAge(p.dob)+' years old';
+  document.getElementById('modal-overlay').classList.add('show');
+}
+
+document.getElementById('modal-close').onclick=()=>document.getElementById('modal-overlay').classList.remove('show');
+document.getElementById('modal-overlay').onclick=function(e){if(e.target===this)this.classList.remove('show');}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.getElementById('modal-overlay').classList.remove('show');});
+
+document.getElementById('search').addEventListener('input',renderPlayers);
+document.getElementById('filter-role').addEventListener('change',renderPlayers);
+document.getElementById('filter-nation').addEventListener('change',renderPlayers);
+document.getElementById('sort-by').addEventListener('change',renderPlayers);
+
+document.getElementById('grid-btn').addEventListener('click',()=>{
+  isListView=false;
+  document.getElementById('grid-btn').classList.add('active');
+  document.getElementById('list-btn').classList.remove('active');
+  renderPlayers();
+});
+document.getElementById('list-btn').addEventListener('click',()=>{
+  isListView=true;
+  document.getElementById('list-btn').classList.add('active');
+  document.getElementById('grid-btn').classList.remove('active');
+  renderPlayers();
+});
+
+renderPlayers();
+</script>
+</body>
+</html>
