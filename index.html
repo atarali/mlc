@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Major League Cricket | Home</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --navy:#001F54;--navy-light:#003380;--red:#E31837;--red-dark:#B71C1C;
+  --white:#FFFFFF;--gray-100:#F8F9FA;--gray-200:#E9ECEF;--gray-300:#DEE2E6;
+  --gray-400:#CED4DA;--gray-500:#ADB5BD;--gray-600:#6C757D;--gray-700:#495057;
+  --gray-800:#343A40;--gray-900:#212529;--gold:#FFD700;
+  --glass:rgba(255,255,255,0.08);--glass-border:rgba(255,255,255,0.15);
+  --shadow:0 8px 32px rgba(0,0,0,0.3);--radius:16px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--gray-900);color:var(--white);overflow-x:hidden;line-height:1.6}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:8px}
+::-webkit-scrollbar-track{background:var(--navy)}
+::-webkit-scrollbar-thumb{background:var(--red);border-radius:4px}
+
+/* Loader */
+#loader{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--navy);z-index:10000;display:flex;align-items:center;justify-content:center;transition:opacity .6s,visibility .6s}
+#loader.hidden{opacity:0;visibility:hidden}
+.loader-cricket{width:60px;height:60px;border:4px solid var(--glass-border);border-top:4px solid var(--red);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Particles Canvas */
+#particles-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+
+/* Top Bar */
+.top-bar{position:fixed;top:0;left:0;width:100%;z-index:1000;background:rgba(0,31,84,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border);transition:transform .4s}
+.top-bar.scrolled{box-shadow:0 4px 30px rgba(0,0,0,0.4)}
+.top-bar-inner{max-width:1400px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--white)}
+.logo svg{height:48px;width:auto}
+.logo-text{font-family:'Oswald',sans-serif;font-size:1.4rem;font-weight:700;letter-spacing:2px}
+.logo-text span{color:var(--red)}
+
+/* Nav */
+.main-nav{display:flex;align-items:center;gap:4px}
+.nav-link{padding:8px 16px;color:var(--gray-300);text-decoration:none;font-size:.85rem;font-weight:500;border-radius:8px;transition:all .3s;position:relative}
+.nav-link:hover,.nav-link.active{color:var(--white);background:var(--glass)}
+.nav-link::after{content:'';position:absolute;bottom:0;left:50%;width:0;height:2px;background:var(--red);transition:all .3s;transform:translateX(-50%)}
+.nav-link:hover::after,.nav-link.active::after{width:60%}
+
+/* Score Ticker */
+.score-ticker{background:linear-gradient(90deg,var(--red),var(--red-dark));padding:8px 0;overflow:hidden;white-space:nowrap}
+.ticker-track{display:inline-block;animation:ticker-scroll 40s linear infinite}
+.ticker-track:hover{animation-play-state:paused}
+.ticker-item{display:inline-flex;align-items:center;gap:12px;padding:0 32px;font-size:.8rem;font-weight:600}
+.ticker-item .team{display:inline-flex;align-items:center;gap:6px}
+.ticker-item .score{color:var(--gold)}
+.ticker-dot{width:4px;height:4px;background:var(--white);border-radius:50%;opacity:.5}
+@keyframes ticker-scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* Hamburger */
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;z-index:1001}
+.hamburger span{width:24px;height:2px;background:var(--white);transition:all .3s;border-radius:2px}
+.hamburger.active span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.hamburger.active span:nth-child(2){opacity:0}
+.hamburger.active span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+
+/* Hero */
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-top:73px}
+.hero-bg{position:absolute;inset:0;z-index:0}
+.hero-bg img{width:100%;height:100%;object-fit:cover;filter:brightness(0.35)}
+.hero-gradient{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,31,84,0.8) 0%,rgba(0,31,84,0.4) 40%,rgba(0,31,84,0.9) 100%);z-index:1}
+.hero-content{position:relative;z-index:2;text-align:center;padding:40px 24px;max-width:900px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--glass);backdrop-filter:blur(10px);border:1px solid var(--glass-border);padding:8px 20px;border-radius:50px;font-size:.8rem;font-weight:600;color:var(--gold);margin-bottom:24px;animation:fadeInDown .8s ease}
+.hero-badge .live-dot{width:8px;height:8px;background:var(--red);border-radius:50%;animation:pulse-dot 1.5s infinite}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
+.hero h1{font-family:'Oswald',sans-serif;font-size:clamp(2.5rem,7vw,5.5rem);font-weight:900;line-height:1.05;margin-bottom:20px;text-transform:uppercase;animation:fadeInUp .8s ease .2s both}
+.hero h1 .highlight{background:linear-gradient(135deg,var(--red),#FF6B6B);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:clamp(1rem,2vw,1.25rem);color:var(--gray-400);max-width:600px;margin:0 auto 36px;animation:fadeInUp .8s ease .4s both}
+.hero-buttons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;animation:fadeInUp .8s ease .6s both}
+.btn{padding:14px 32px;border-radius:12px;font-weight:600;font-size:.95rem;text-decoration:none;transition:all .3s;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:8px;font-family:'Inter',sans-serif}
+.btn-primary{background:linear-gradient(135deg,var(--red),var(--red-dark));color:var(--white);box-shadow:0 4px 20px rgba(227,24,55,0.4)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(227,24,55,0.6)}
+.btn-outline{background:var(--glass);backdrop-filter:blur(10px);border:1px solid var(--glass-border);color:var(--white)}
+.btn-outline:hover{background:rgba(255,255,255,0.15);transform:translateY(-2px)}
+.btn-sm{padding:10px 20px;font-size:.85rem;border-radius:8px}
+
+/* Stats Bar */
+.stats-bar{position:relative;z-index:2;max-width:1000px;margin:-40px auto 0;padding:0 24px}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);background:rgba(0,31,84,0.9);backdrop-filter:blur(20px);border:1px solid var(--glass-border);border-radius:var(--radius);overflow:hidden}
+.stat-item{padding:28px 20px;text-align:center;border-right:1px solid var(--glass-border);transition:background .3s}
+.stat-item:last-child{border-right:none}
+.stat-item:hover{background:var(--glass)}
+.stat-number{font-family:'Oswald',sans-serif;font-size:2.2rem;font-weight:700;color:var(--red)}
+.stat-label{font-size:.8rem;color:var(--gray-500);margin-top:4px;text-transform:uppercase;letter-spacing:1px}
+
+/* Section Styles */
+.section{padding:80px 24px;position:relative;z-index:1}
+.section-header{text-align:center;margin-bottom:48px}
+.section-tag{display:inline-flex;align-items:center;gap:6px;color:var(--red);font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:2px;margin-bottom:12px}
+.section-tag::before,.section-tag::after{content:'';width:24px;height:1px;background:var(--red)}
+.section-title{font-family:'Oswald',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:700;text-transform:uppercase}
+.section-subtitle{color:var(--gray-500);margin-top:8px;max-width:500px;margin-inline:auto}
+
+/* Navigation Grid */
+.nav-section{background:linear-gradient(180deg,var(--gray-900) 0%,rgba(0,31,84,0.3) 100%)}
+.nav-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;max-width:1200px;margin:0 auto}
+.nav-card{position:relative;background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--glass-border);border-radius:var(--radius);padding:32px 24px;text-align:center;cursor:pointer;transition:all .4s cubic-bezier(.4,0,.2,1);overflow:hidden;text-decoration:none;color:var(--white);display:block}
+.nav-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(227,24,55,0.15),transparent);opacity:0;transition:opacity .4s}
+.nav-card:hover::before{opacity:1}
+.nav-card:hover{transform:translateY(-8px);border-color:rgba(227,24,55,0.4);box-shadow:0 20px 40px rgba(227,24,55,0.15)}
+.nav-card-icon{width:56px;height:56px;margin:0 auto 16px;background:linear-gradient(135deg,var(--red),var(--red-dark));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;transition:transform .4s}
+.nav-card:hover .nav-card-icon{transform:scale(1.1) rotate(-5deg)}
+.nav-card-title{font-family:'Oswald',sans-serif;font-size:1.15rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.nav-card-desc{font-size:.8rem;color:var(--gray-500);line-height:1.5}
+.nav-card-arrow{position:absolute;top:16px;right:16px;width:28px;height:28px;background:var(--glass);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;opacity:0;transform:translate(-8px,8px);transition:all .4s}
+.nav-card:hover .nav-card-arrow{opacity:1;transform:translate(0,0)}
+
+/* Live Matches */
+.live-section{background:var(--navy)}
+.live-matches-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:24px;max-width:1200px;margin:0 auto}
+.match-card{background:rgba(255,255,255,0.05);border:1px solid var(--glass-border);border-radius:var(--radius);overflow:hidden;transition:all .4s}
+.match-card:hover{transform:translateY(-4px);border-color:rgba(227,24,55,0.3);box-shadow:var(--shadow)}
+.match-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:rgba(0,0,0,0.2);border-bottom:1px solid var(--glass-border)}
+.match-status{display:inline-flex;align-items:center;gap:6px;font-size:.7rem;font-weight:700;text-transform:uppercase;padding:4px 12px;border-radius:50px}
+.match-status.live{background:rgba(227,24,55,0.2);color:var(--red)}
+.match-status.live .dot{width:6px;height:6px;background:var(--red);border-radius:50%;animation:pulse-dot 1.5s infinite}
+.match-status.completed{background:rgba(108,117,125,0.2);color:var(--gray-400)}
+.match-status.upcoming{background:rgba(255,215,0,0.15);color:var(--gold)}
+.match-venue{font-size:.75rem;color:var(--gray-500)}
+.match-body{padding:24px 20px}
+.match-team{display:flex;align-items:center;justify-content:space-between;padding:10px 0}
+.match-team-info{display:flex;align-items:center;gap:12px}
+.team-logo-circle{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;flex-shrink:0}
+.team-name{font-weight:600;font-size:.95rem}
+.team-abbr{font-size:.7rem;color:var(--gray-500)}
+.match-score{text-align:right}
+.match-score .runs{font-family:'Oswald',sans-serif;font-size:1.4rem;font-weight:700}
+.match-score .overs{font-size:.75rem;color:var(--gray-500)}
+.match-footer{padding:12px 20px;background:rgba(0,0,0,0.15);border-top:1px solid var(--glass-border);display:flex;align-items:center;justify-content:space-between}
+.match-result{font-size:.8rem;font-weight:600;color:var(--gold)}
+.match-link{font-size:.75rem;color:var(--red);text-decoration:none;font-weight:600;display:flex;align-items:center;gap:4px;transition:gap .3s}
+.match-link:hover{gap:8px}
+
+/* News Section */
+.news-section{background:linear-gradient(180deg,rgba(0,31,84,0.3),var(--gray-900))}
+.news-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:1200px;margin:0 auto}
+.news-featured{grid-row:span 2;border-radius:var(--radius);overflow:hidden;position:relative;cursor:pointer;min-height:400px}
+.news-featured img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.news-featured:hover img{transform:scale(1.05)}
+.news-featured-overlay{position:absolute;bottom:0;left:0;right:0;padding:32px;background:linear-gradient(transparent,rgba(0,0,0,0.9))}
+.news-category{display:inline-block;background:var(--red);padding:4px 12px;border-radius:4px;font-size:.7rem;font-weight:700;text-transform:uppercase;margin-bottom:12px}
+.news-featured h3{font-family:'Oswald',sans-serif;font-size:1.6rem;font-weight:700;margin-bottom:8px}
+.news-featured p{font-size:.85rem;color:var(--gray-400);line-height:1.6}
+.news-card{background:rgba(255,255,255,0.05);border:1px solid var(--glass-border);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:all .4s;display:flex}
+.news-card:hover{border-color:rgba(227,24,55,0.3);transform:translateX(4px)}
+.news-card-img{width:140px;min-height:140px;flex-shrink:0;overflow:hidden}
+.news-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.news-card:hover .news-card-img img{transform:scale(1.1)}
+.news-card-content{padding:20px;display:flex;flex-direction:column;justify-content:center}
+.news-card-content h4{font-size:1rem;font-weight:600;margin-bottom:6px;line-height:1.4}
+.news-card-content .news-date{font-size:.75rem;color:var(--gray-500)}
+.news-card-content .news-excerpt{font-size:.8rem;color:var(--gray-400);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+/* Standings */
+.standings-section{background:var(--navy)}
+.standings-container{max-width:900px;margin:0 auto}
+.standings-table{width:100%;border-collapse:collapse;background:rgba(255,255,255,0.03);border-radius:var(--radius);overflow:hidden;border:1px solid var(--glass-border)}
+.standings-table thead{background:rgba(0,0,0,0.3)}
+.standings-table th{padding:16px 20px;text-align:left;font-size:.75rem;text-transform:uppercase;letter-spacing:1px;color:var(--gray-500);font-weight:600}
+.standings-table td{padding:16px 20px;border-top:1px solid var(--glass-border);font-size:.9rem}
+.standings-table tbody tr{transition:background .3s}
+.standings-table tbody tr:hover{background:var(--glass)}
+.team-cell{display:flex;align-items:center;gap:12px}
+.team-rank{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700}
+.team-rank.gold{background:linear-gradient(135deg,#FFD700,#FFA500);color:#000}
+.team-rank.silver{background:linear-gradient(135deg,#C0C0C0,#A0A0A0);color:#000}
+.team-rank.bronze{background:linear-gradient(135deg,#CD7F32,#A0522D);color:#fff}
+.team-rank.normal{background:var(--glass);color:var(--gray-400)}
+.points-cell{font-family:'Oswald',sans-serif;font-size:1.2rem;font-weight:700;color:var(--gold)}
+
+/* Players Spotlight */
+.players-section{background:linear-gradient(180deg,var(--gray-900),rgba(0,31,84,0.4))}
+.players-carousel{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px}
+.player-card{position:relative;background:rgba(255,255,255,0.05);border:1px solid var(--glass-border);border-radius:var(--radius);overflow:hidden;transition:all .4s}
+.player-card:hover{transform:translateY(-8px);border-color:rgba(227,24,55,0.3)}
+.player-img{height:280px;overflow:hidden;position:relative}
+.player-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.player-card:hover .player-img img{transform:scale(1.08)}
+.player-overlay{position:absolute;bottom:0;left:0;right:0;height:50%;background:linear-gradient(transparent,rgba(0,0,0,0.8))}
+.player-info{padding:20px;position:relative;z-index:1}
+.player-role{font-size:.7rem;color:var(--red);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.player-name{font-family:'Oswald',sans-serif;font-size:1.3rem;font-weight:700}
+.player-team-name{font-size:.8rem;color:var(--gray-500);margin-top:2px}
+.player-stats-row{display:flex;gap:16px;margin-top:12px}
+.player-stat{text-align:center}
+.player-stat-val{font-family:'Oswald',sans-serif;font-size:1.1rem;font-weight:700;color:var(--gold)}
+.player-stat-label{font-size:.65rem;color:var(--gray-500);text-transform:uppercase}
+
+/* CTA / Newsletter */
+.cta-section{background:linear-gradient(135deg,var(--navy),var(--navy-light));position:relative;overflow:hidden}
+.cta-section::before{content:'';position:absolute;top:-50%;right:-20%;width:600px;height:600px;background:radial-gradient(circle,rgba(227,24,55,0.15),transparent 70%);border-radius:50%}
+.cta-container{max-width:700px;margin:0 auto;text-align:center;position:relative;z-index:1}
+.cta-container h2{font-family:'Oswald',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:700;text-transform:uppercase;margin-bottom:16px}
+.cta-container p{color:var(--gray-400);margin-bottom:32px}
+.newsletter-form{display:flex;gap:12px;max-width:500px;margin:0 auto}
+.newsletter-input{flex:1;padding:14px 20px;background:var(--glass);backdrop-filter:blur(10px);border:1px solid var(--glass-border);border-radius:12px;color:var(--white);font-size:.9rem;font-family:'Inter',sans-serif;outline:none;transition:border-color .3s}
+.newsletter-input::placeholder{color:var(--gray-500)}
+.newsletter-input:focus{border-color:var(--red)}
+
+/* Footer */
+.footer{background:rgba(0,0,0,0.5);border-top:1px solid var(--glass-border);padding:60px 24px 24px}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;max-width:1200px;margin:0 auto}
+.footer-brand p{color:var(--gray-500);font-size:.85rem;margin-top:12px;line-height:1.7}
+.footer-social{display:flex;gap:12px;margin-top:20px}
+.social-icon{width:40px;height:40px;background:var(--glass);border:1px solid var(--glass-border);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--gray-400);text-decoration:none;transition:all .3s;font-size:.9rem}
+.social-icon:hover{background:var(--red);border-color:var(--red);color:var(--white);transform:translateY(-3px)}
+.footer h4{font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px}
+.footer-links{list-style:none}
+.footer-links li{margin-bottom:10px}
+.footer-links a{color:var(--gray-500);text-decoration:none;font-size:.85rem;transition:color .3s}
+.footer-links a:hover{color:var(--red)}
+.footer-bottom{max-width:1200px;margin:40px auto 0;padding-top:24px;border-top:1px solid var(--glass-border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.footer-bottom p{font-size:.8rem;color:var(--gray-600)}
+
+/* Back to top */
+.back-to-top{position:fixed;bottom:24px;right:24px;width:48px;height:48px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;visibility:hidden;transition:all .4s;z-index:999;border:none;color:var(--white);font-size:1.2rem;box-shadow:0 4px 20px rgba(227,24,55,0.4)}
+.back-to-top.visible{opacity:1;visibility:visible}
+.back-to-top:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(227,24,55,0.6)}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);z-index:5000;display:none;align-items:center;justify-content:center;padding:24px}
+.modal-overlay.active{display:flex}
+.modal{background:var(--gray-800);border:1px solid var(--glass-border);border-radius:var(--radius);max-width:500px;width:100%;padding:32px;position:relative;animation:modalIn .4s ease}
+@keyframes modalIn{from{opacity:0;transform:scale(0.9) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-close{position:absolute;top:16px;right:16px;width:32px;height:32px;background:var(--glass);border:1px solid var(--glass-border);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--white);font-size:1rem;transition:all .3s}
+.modal-close:hover{background:var(--red);border-color:var(--red)}
+.modal h3{font-family:'Oswald',sans-serif;font-size:1.5rem;margin-bottom:8px}
+.modal p{color:var(--gray-400);font-size:.9rem;margin-bottom:20px}
+
+/* Animations */
+@keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeInDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(40px);transition:all .8s cubic-bezier(.4,0,.2,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* Theme Toggle */
+.theme-toggle{position:fixed;bottom:24px;left:24px;z-index:999;width:48px;height:48px;background:var(--glass);backdrop-filter:blur(10px);border:1px solid var(--glass-border);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .3s;font-size:1.2rem}
+.theme-toggle:hover{background:rgba(255,255,255,0.15);transform:scale(1.1)}
+
+/* Responsive */
+@media(max-width:1024px){
+  .main-nav{display:none;position:fixed;top:0;left:0;width:100%;height:100vh;background:rgba(0,31,84,0.98);backdrop-filter:blur(20px);flex-direction:column;align-items:center;justify-content:center;gap:8px}
+  .main-nav.open{display:flex}
+  .hamburger{display:flex}
+  .footer-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:768px){
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .stat-item:nth-child(2){border-right:none}
+  .stat-item:nth-child(1),.stat-item:nth-child(2){border-bottom:1px solid var(--glass-border)}
+  .nav-grid{grid-template-columns:repeat(2,1fr)}
+  .news-grid{grid-template-columns:1fr}
+  .news-featured{grid-row:span 1;min-height:300px}
+  .live-matches-grid{grid-template-columns:1fr}
+  .newsletter-form{flex-direction:column}
+  .footer-grid{grid-template-columns:1fr}
+  .footer-bottom{flex-direction:column;text-align:center}
+}
+@media(max-width:480px){
+  .nav-grid{grid-template-columns:1fr}
+  .stats-grid{grid-template-columns:1fr}
+  .stat-item{border-right:none!important;border-bottom:1px solid var(--glass-border)}
+  .stat-item:last-child{border-bottom:none}
+}
+
+/* Dark/Light mode */
+body.light-mode{--gray-900:#F0F2F5;--glass:rgba(255,255,255,0.7);--glass-border:rgba(0,0,0,0.1)}
+body.light-mode .hero-bg img{filter:brightness(0.6)}
+body.light-mode .hero-gradient{background:linear-gradient(180deg,rgba(0,31,84,0.6) 0%,rgba(0,31,84,0.3) 40%,rgba(0,31,84,0.8) 100%)}
+
+/* Confetti */
+.confetti-piece{position:fixed;width:10px;height:10px;z-index:9999;pointer-events:none;animation:confetti-fall 3s ease-out forwards}
+@keyframes confetti-fall{0%{transform:translateY(-100vh) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+</style>
+</head>
+<body>
+
+<!-- Loader -->
+<div id="loader"><div class="loader-cricket"></div></div>
+
+<!-- Particles -->
+<canvas id="particles-canvas"></canvas>
+
+<!-- Top Bar -->
+<header class="top-bar" id="topBar">
+  <div class="top-bar-inner">
+    <a href="#" class="logo">
+      <svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg" height="48">
+        <text x="10" y="30" fill="#001F54" font-family="Oswald, sans-serif" font-weight="700" font-size="14" letter-spacing="2">MAJOR LEAGUE</text>
+        <text x="10" y="62" fill="#001F54" font-family="Oswald, sans-serif" font-weight="900" font-size="28" letter-spacing="3">CRICKET</text>
+        <rect x="10" y="75" width="30" height="100" rx="3" fill="#E31837" opacity="0.9"/>
+        <rect x="45" y="75" width="30" height="100" rx="3" fill="#E31837" opacity="0.9"/>
+        <path d="M100 75 L130 75 L130 175 L160 175 L160 140 L190 140 L190 175 L160 175 L160 75 Z" fill="#001F54"/>
+        <polygon points="10,175 100,200 190,175" fill="#001F54" opacity="0.8"/>
+      </svg>
+    </a>
+    <nav class="main-nav" id="mainNav">
+      <a href="#home" class="nav-link active">Home</a>
+      <a href="#matches" class="nav-link">Matches</a>
+      <a href="#teams" class="nav-link">Teams</a>
+      <a href="#players" class="nav-link">Players</a>
+      <a href="#standings" class="nav-link">Standings</a>
+      <a href="#news" class="nav-link">News</a>
+      <a href="#" class="nav-link" onclick="openModal('tickets')">Tickets</a>
+      <a href="#" class="nav-link btn btn-primary btn-sm" onclick="openModal('subscribe')">Subscribe</a>
+    </nav>
+    <div class="hamburger" id="hamburger" onclick="toggleNav()">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</header>
+
+<!-- Score Ticker -->
+<div class="score-ticker" style="margin-top:73px">
+  <div class="ticker-track" id="tickerTrack">
+    <div class="ticker-item"><span class="team">🔵 MI</span> <span class="score">189/4 (18.2)</span> <span class="ticker-dot"></span> <span class="team">🟢 LA</span> <span class="score">142/8 (20)</span> — MI won by 6 wkts</div>
+    <div class="ticker-item"><span class="team">🟡 DC</span> <span class="score">167/7 (20)</span> <span class="ticker-dot"></span> <span class="team">🔴 SF</span> <span class="score">168/3 (17.4)</span> — SF won by 7 wkts</div>
+    <div class="ticker-item"><span class="team">🟠 SE</span> <span class="score">201/5 (20)</span> <span class="ticker-dot"></span> <span class="team">🟣 TX</span> <span class="score">198/6 (20)</span> — SE won by 3 runs</div>
+    <div class="ticker-item"><span class="team">⚪ WA</span> <span class="score">156/9 (20)</span> <span class="ticker-dot"></span> <span class="team">🔵 MI</span> — Today, 7:30 PM ET</div>
+    <div class="ticker-item"><span class="team"> SF</span> <span class="score">—</span> <span class="ticker-dot"></span> <span class="team">🟢 LA</span> — Tomorrow, 8:00 PM ET</div>
+    <!-- Duplicate for seamless scroll -->
+    <div class="ticker-item"><span class="team">🔵 MI</span> <span class="score">189/4 (18.2)</span> <span class="ticker-dot"></span> <span class="team">🟢 LA</span> <span class="score">142/8 (20)</span> — MI won by 6 wkts</div>
+    <div class="ticker-item"><span class="team">🟡 DC</span> <span class="score">167/7 (20)</span> <span class="ticker-dot"></span> <span class="team">🔴 SF</span> <span class="score">168/3 (17.4)</span> — SF won by 7 wkts</div>
+    <div class="ticker-item"><span class="team">🟠 SE</span> <span class="score">201/5 (20)</span> <span class="ticker-dot"></span> <span class="team">🟣 TX</span> <span class="score">198/6 (20)</span> — SE won by 3 runs</div>
+    <div class="ticker-item"><span class="team">⚪ WA</span> <span class="score">156/9 (20)</span> <span class="ticker-dot"></span> <span class="team">🔵 MI</span> — Today, 7:30 PM ET</div>
+    <div class="ticker-item"><span class="team">🔴 SF</span> <span class="score">—</span> <span class="ticker-dot"></span> <span class="team">🟢 LA</span> — Tomorrow, 8:00 PM ET</div>
+  </div>
+</div>
+
+<!-- Hero -->
+<section class="hero" id="home">
+  <div class="hero-bg">
+    <img src="https://image.qwenlm.ai/public_source/913c57b4-3876-4471-a88a-3aa71da9d9dd/10eb9013e-14f2-4000-9c9c-a52d97a06e86.png" alt="Cricket Stadium">
+    <div class="hero-gradient"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge"><span class="live-dot"></span> Season 2026 — Now Live</div>
+    <h1>THE <span class="highlight">BIGGEST</span><br>CRICKET STAGE<br>IN <span class="highlight">AMERICA</span></h1>
+    <p>Experience world-class T20 cricket with the best players from around the globe, right here in the United States.</p>
+    <div class="hero-buttons">
+      <a href="#matches" class="btn btn-primary">🏏 Watch Live</a>
+      <a href="#" class="btn btn-outline" onclick="openModal('subscribe')">Get Tickets →</a>
+    </div>
+  </div>
+</section>
+
+<!-- Stats Bar -->
+<div class="stats-bar reveal">
+  <div class="stats-grid">
+    <div class="stat-item"><div class="stat-number" data-target="6">0</div><div class="stat-label">Teams</div></div>
+    <div class="stat-item"><div class="stat-number" data-target="45">0</div><div class="stat-label">Matches</div></div>
+    <div class="stat-item"><div class="stat-number" data-target="150">0</div><div class="stat-label">Players</div></div>
+    <div class="stat-item"><div class="stat-number" data-target="8">0</div><div class="stat-label">Venues</div></div>
+  </div>
+</div>
+
+<!-- Navigation Grid -->
+<section class="section nav-section" id="navigate">
+  <div class="section-header reveal">
+    <div class="section-tag">Explore MLC</div>
+    <h2 class="section-title">Navigate Your Experience</h2>
+    <p class="section-subtitle">Everything you need about Major League Cricket, one click away</p>
+  </div>
+  <div class="nav-grid">
+    <a href="#" class="nav-card reveal" onclick="openModal('players')">
+      <div class="nav-card-icon">🏏</div>
+      <div class="nav-card-title">Players</div>
+      <div class="nav-card-desc">Rosters, stats & profiles of 150+ international stars</div>
+      <div class="nav-card-arrow">→</div>
+    </a>
+    <a href="#" class="nav-card reveal" onclick="openModal('teams')">
+      <div class="nav-card-icon">🏟️</div>
+      <div class="nav-card-title">Teams</div>
+      <div class="nav-card-desc">All six franchise teams & their franchises</div>
+      <div class="nav-card-arrow">→</div>
+    </a>
+    <a href="#matches" class="nav-card reveal">
+      <div class="nav-card-icon">📅</div>
+      <div class="nav-card-title">Matches</div>
+      <div class="nav-card-desc">Live scores, results & upcoming fixtures</div>
+      <div class="nav-card-arrow">→</div>
+    </a>
+    <a href="#" class="nav-card reveal" onclick="openModal('schedule')">
+      <div class="nav-card-icon">📋</div>
+      <div class="nav-card-title">Schedule</div>
+      <div class="nav-card-desc">Full season calendar & playoff dates</div>
+      <div class="nav-card-arrow">→</div>
+    </a>
+    <a href="#standings" class="nav-card reveal">
+      <div class="nav-card-icon">🏆</div>
+      <div class="nav-card-title">Standings</div>
+      <div class="nav-card-desc">Points table & playoff race tracker</div>
+      <div class="nav-card-arrow">→</div>
+    </a>
+    <a href="#news" class="nav-card reveal">
+      <div class="nav-card-icon">📰</div>
+      <div class="nav-card-title">News</div>
+      <div class="nav-card-desc">Latest updates, transfers & match reports</div>
+      <div class="nav-card-arrow">→</div>
+    </a>
+    <a href="#" class="nav-card reveal" onclick="openModal('stats')">
+      <div class="nav-card-icon">📊</div>
+      <div class="nav-card-title">Statistics</div>
+      <div class="nav-card-desc">Batting, bowling & fielding leaderboards</div>
+      <div class="nav-card-arrow">→</div>
+    </a>
+    <a href="#" class="nav-card reveal" onclick="openModal('tickets')">
+      <div class="nav-card-icon">🎟️</div>
+      <div class="nav-card-title">Tickets</div>
+      <div class="nav-card-desc">Book match tickets & season packages</div>
+      <div class="nav-card-arrow">→</div>
+    </a>
+    <a href="#" class="nav-card reveal" onclick="openModal('fantasy')">
+      <div class="nav-card-icon">⭐</div>
+      <div class="nav-card-title">Fantasy</div>
+      <div class="nav-card-desc">Build your dream team & win prizes</div>
+      <div class="nav-card-arrow">→</div>
+    </a>
+    <a href="#" class="nav-card reveal" onclick="openModal('merch')">
+      <div class="nav-card-icon">🛒</div>
+      <div class="nav-card-title">Merchandise</div>
+      <div class="nav-card-desc">Official jerseys, caps & accessories</div>
+      <div class="nav-card-arrow">→</div>
+    </a>
+    <a href="#" class="nav-card reveal" onclick="openModal('videos')">
+      <div class="nav-card-icon">🎬</div>
+      <div class="nav-card-title">Videos</div>
+      <div class="nav-card-desc">Highlights, interviews & behind the scenes</div>
+      <div class="nav-card-arrow">→</div>
+    </a>
+    <a href="#" class="nav-card reveal" onclick="openModal('community')">
+      <div class="nav-card-icon">💬</div>
+      <div class="nav-card-title">Community</div>
+      <div class="nav-card-desc">Fan forums, events & grassroots cricket</div>
+      <div class="nav-card-arrow">→</div>
+    </a>
+  </div>
+</section>
+
+<!-- Live Matches -->
+<section class="section live-section" id="matches">
+  <div class="section-header reveal">
+    <div class="section-tag">Action</div>
+    <h2 class="section-title">Live & Recent Matches</h2>
+    <p class="section-subtitle">Catch up on the latest results and watch live action</p>
+  </div>
+  <div class="live-matches-grid">
+    <div class="match-card reveal">
+      <div class="match-header">
+        <div class="match-status live"><span class="dot"></span> Live</div>
+        <div class="match-venue"> Grand Prairie Stadium, Dallas</div>
+      </div>
+      <div class="match-body">
+        <div class="match-team">
+          <div class="match-team-info">
+            <div class="team-logo-circle" style="background:linear-gradient(135deg,#001F54,#003380);color:#fff">WA</div>
+            <div><div class="team-name">Washington Freedom</div><div class="team-abbr">WA</div></div>
+          </div>
+          <div class="match-score"><div class="runs">156/9</div><div class="overs">(20.0 ov)</div></div>
+        </div>
+        <div class="match-team">
+          <div class="match-team-info">
+            <div class="team-logo-circle" style="background:linear-gradient(135deg,#E31837,#B71C1C);color:#fff">MI</div>
+            <div><div class="team-name">MI New York</div><div class="team-abbr">MI</div></div>
+          </div>
+          <div class="match-score"><div class="runs">98/3</div><div class="overs">(12.4 ov)</div></div>
+        </div>
+      </div>
+      <div class="match-footer">
+        <div class="match-result">MI need 59 runs in 44 balls</div>
+        <a href="#" class="match-link">Watch Live →</a>
+      </div>
+    </div>
+    <div class="match-card reveal">
+      <div class="match-header">
+        <div class="match-status completed">Completed</div>
+        <div class="match-venue">📍 Central Broward Park, Florida</div>
+      </div>
+      <div class="match-body">
+        <div class="match-team">
+          <div class="match-team-info">
+            <div class="team-logo-circle" style="background:linear-gradient(135deg,#FFD700,#FFA500);color:#000">SE</div>
+            <div><div class="team-name">Seattle Orcas</div><div class="team-abbr">SE</div></div>
+          </div>
+          <div class="match-score"><div class="runs">201/5</div><div class="overs">(20.0 ov)</div></div>
+        </div>
+        <div class="match-team">
+          <div class="match-team-info">
+            <div class="team-logo-circle" style="background:linear-gradient(135deg,#6B21A8,#4C1D95);color:#fff">TX</div>
+            <div><div class="team-name">Texas Super Kings</div><div class="team-abbr">TX</div></div>
+          </div>
+          <div class="match-score"><div class="runs">198/6</div><div class="overs">(20.0 ov)</div></div>
+        </div>
+      </div>
+      <div class="match-footer">
+        <div class="match-result">Seattle Orcas won by 3 runs</div>
+        <a href="#" class="match-link">Highlights →</a>
+      </div>
+    </div>
+    <div class="match-card reveal">
+      <div class="match-header">
+        <div class="match-status upcoming">Upcoming</div>
+        <div class="match-venue">📍 Church Street Park, Morrisville</div>
+      </div>
+      <div class="match-body">
+        <div class="match-team">
+          <div class="match-team-info">
+            <div class="team-logo-circle" style="background:linear-gradient(135deg,#16A34A,#15803D);color:#fff">LA</div>
+            <div><div class="team-name">Los Angeles Knight Riders</div><div class="team-abbr">LA</div></div>
+          </div>
+          <div class="match-score"><div class="runs">—</div><div class="overs">—</div></div>
+        </div>
+        <div class="match-team">
+          <div class="match-team-info">
+            <div class="team-logo-circle" style="background:linear-gradient(135deg,#E31837,#B71C1C);color:#fff">SF</div>
+            <div><div class="team-name">San Francisco Unicorns</div><div class="team-abbr">SF</div></div>
+          </div>
+          <div class="match-score"><div class="runs">—</div><div class="overs">—</div></div>
+        </div>
+      </div>
+      <div class="match-footer">
+        <div class="match-result">Tomorrow, 8:00 PM ET</div>
+        <a href="#" class="match-link" onclick="openModal('tickets')">Get Tickets →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- News -->
+<section class="section news-section" id="news">
+  <div class="section-header reveal">
+    <div class="section-tag">Latest</div>
+    <h2 class="section-title">News & Updates</h2>
+    <p class="section-subtitle">Stay informed with the latest from Major League Cricket</p>
+  </div>
+  <div class="news-grid">
+    <div class="news-featured reveal">
+      <img src="https://image.qwenlm.ai/public_source/913c57b4-3876-4471-a88a-3aa71da9d9dd/111a783cf-175c-48c3-937f-b91d928f0c9b.png" alt="Featured News">
+      <div class="news-featured-overlay">
+        <span class="news-category">Featured</span>
+        <h3>MLC 2026 Season Kicks Off with Record-Breaking Opening Ceremony</h3>
+        <p>The third season of Major League Cricket opened with a spectacular ceremony featuring international music acts and a fireworks display that lit up the Dallas skyline.</p>
+      </div>
+    </div>
+    <div class="news-card reveal">
+      <div class="news-card-img">
+        <img src="https://image.qwenlm.ai/public_source/913c57b4-3876-4471-a88a-3aa71da9d9dd/12729f309-5dd2-442d-bb5b-2dec6093fa32.png" alt="News">
+      </div>
+      <div class="news-card-content">
+        <span class="news-category" style="margin-bottom:8px">Transfer</span>
+        <h4>Star All-Rounder Signs Mega Deal with Seattle Orcas</h4>
+        <p class="news-excerpt">The franchise secures one of the most sought-after players in a deal worth $2.5 million over two seasons.</p>
+        <span class="news-date">April 6, 2026</span>
+      </div>
+    </div>
+    <div class="news-card reveal">
+      <div class="news-card-img">
+        <img src="https://image.qwenlm.ai/public_source/913c57b4-3876-4471-a88a-3aa71da9d9dd/19f166d7f-5b36-46bc-9fde-de027d26db47.png" alt="News">
+      </div>
+      <div class="news-card-content">
+        <span class="news-category" style="margin-bottom:8px">Match Report</span>
+        <h4>Seattle Orcas Edge Texas Super Kings in Thriller Finish</h4>
+        <p class="news-excerpt">A last-over drama saw Seattle defend 201 runs as Texas fell just 3 runs short in an unforgettable contest.</p>
+        <span class="news-date">April 5, 2026</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Players Spotlight -->
+<section class="section players-section" id="players">
+  <div class="section-header reveal">
+    <div class="section-tag">Stars</div>
+    <h2 class="section-title">Player Spotlight</h2>
+    <p class="section-subtitle">Meet the biggest names lighting up the MLC pitch</p>
+  </div>
+  <div class="players-carousel">
+    <div class="player-card reveal">
+      <div class="player-img">
+        <img src="https://image.qwenlm.ai/public_source/913c57b4-3876-4471-a88a-3aa71da9d9dd/111a783cf-175c-48c3-937f-b91d928f0c9b.png" alt="Player">
+        <div class="player-overlay"></div>
+      </div>
+      <div class="player-info">
+        <div class="player-role">Batsman</div>
+        <div class="player-name">Rohit Sharma</div>
+        <div class="player-team-name">MI New York</div>
+        <div class="player-stats-row">
+          <div class="player-stat"><div class="player-stat-val">342</div><div class="player-stat-label">Runs</div></div>
+          <div class="player-stat"><div class="player-stat-val">48.8</div><div class="player-stat-label">Average</div></div>
+          <div class="player-stat"><div class="player-stat-val">165.3</div><div class="player-stat-label">SR</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="player-card reveal">
+      <div class="player-img">
+        <img src="https://image.qwenlm.ai/public_source/913c57b4-3876-4471-a88a-3aa71da9d9dd/12729f309-5dd2-442d-bb5b-2dec6093fa32.png" alt="Player">
+        <div class="player-overlay"></div>
+      </div>
+      <div class="player-info">
+        <div class="player-role">All-Rounder</div>
+        <div class="player-name">Rashid Khan</div>
+        <div class="player-team-name">Washington Freedom</div>
+        <div class="player-stats-row">
+          <div class="player-stat"><div class="player-stat-val">18</div><div class="player-stat-label">Wickets</div></div>
+          <div class="player-stat"><div class="player-stat-val">6.2</div><div class="player-stat-label">Econ</div></div>
+          <div class="player-stat"><div class="player-stat-val">127</div><div class="player-stat-label">Runs</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="player-card reveal">
+      <div class="player-img">
+        <img src="https://image.qwenlm.ai/public_source/913c57b4-3876-4471-a88a-3aa71da9d9dd/19f166d7f-5b36-46bc-9fde-de027d26db47.png" alt="Player">
+        <div class="player-overlay"></div>
+      </div>
+      <div class="player-info">
+        <div class="player-role">Batsman</div>
+        <div class="player-name">Shreyas Iyer</div>
+        <div class="player-team-name">Seattle Orcas</div>
+        <div class="player-stats-row">
+          <div class="player-stat"><div class="player-stat-val">289</div><div class="player-stat-label">Runs</div></div>
+          <div class="player-stat"><div class="player-stat-val">41.2</div><div class="player-stat-label">Average</div></div>
+          <div class="player-stat"><div class="player-stat-val">148.7</div><div class="player-stat-label">SR</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Standings -->
+<section class="section standings-section" id="standings">
+  <div class="section-header reveal">
+    <div class="section-tag">Rankings</div>
+    <h2 class="section-title">2026 Points Table</h2>
+    <p class="section-subtitle">Track the race to the playoffs</p>
+  </div>
+  <div class="standings-container reveal">
+    <table class="standings-table">
+      <thead>
+        <tr><th>#</th><th>Team</th><th>M</th><th>W</th><th>L</th><th>NRR</th><th>PTS</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="team-rank gold">1</span></td><td><div class="team-cell"><div class="team-logo-circle" style="background:linear-gradient(135deg,#001F54,#003380);color:#fff;width:32px;height:32px;font-size:.7rem">WA</div>Washington Freedom</div></td><td>8</td><td>6</td><td>2</td><td>+1.245</td><td class="points-cell">12</td></tr>
+        <tr><td><span class="team-rank silver">2</span></td><td><div class="team-cell"><div class="team-logo-circle" style="background:linear-gradient(135deg,#E31837,#B71C1C);color:#fff;width:32px;height:32px;font-size:.7rem">MI</div>MI New York</div></td><td>8</td><td>5</td><td>3</td><td>+0.892</td><td class="points-cell">10</td></tr>
+        <tr><td><span class="team-rank bronze">3</span></td><td><div class="team-cell"><div class="team-logo-circle" style="background:linear-gradient(135deg,#FFD700,#FFA500);color:#000;width:32px;height:32px;font-size:.7rem">SE</div>Seattle Orcas</div></td><td>8</td><td>5</td><td>3</td><td>+0.654</td><td class="points-cell">10</td></tr>
+        <tr><td><span class="team-rank normal">4</span></td><td><div class="team-cell"><div class="team-logo-circle" style="background:linear-gradient(135deg,#16A34A,#15803D);color:#fff;width:32px;height:32px;font-size:.7rem">LA</div>LA Knight Riders</div></td><td>8</td><td>4</td><td>4</td><td>+0.321</td><td class="points-cell">8</td></tr>
+        <tr><td><span class="team-rank normal">5</span></td><td><div class="team-cell"><div class="team-logo-circle" style="background:linear-gradient(135deg,#6B21A8,#4C1D95);color:#fff;width:32px;height:32px;font-size:.7rem">TX</div>Texas Super Kings</div></td><td>8</td><td>3</td><td>5</td><td>-0.156</td><td class="points-cell">6</td></tr>
+        <tr><td><span class="team-rank normal">6</span></td><td><div class="team-cell"><div class="team-logo-circle" style="background:linear-gradient(135deg,#E31837,#B71C1C);color:#fff;width:32px;height:32px;font-size:.7rem">SF</div>SF Unicorns</div></td><td>8</td><td>1</td><td>7</td><td>-1.892</td><td class="points-cell">2</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- CTA / Newsletter -->
+<section class="section cta-section">
+  <div class="cta-container reveal">
+    <h2>Never Miss a <span style="color:var(--red)">Ball</span></h2>
+    <p>Subscribe to our newsletter for live scores, breaking news, exclusive interviews, and special offers delivered straight to your inbox.</p>
+    <form class="newsletter-form" onsubmit="handleSubscribe(event)">
+      <input type="email" class="newsletter-input" placeholder="Enter your email address" required>
+      <button type="submit" class="btn btn-primary">Subscribe</button>
+    </form>
+    <p style="font-size:.75rem;color:var(--gray-600);margin-top:12px">Join 250,000+ cricket fans. Unsubscribe anytime.</p>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#" class="logo" style="margin-bottom:8px">
+        <svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg" height="44">
+          <text x="10" y="30" fill="#fff" font-family="Oswald, sans-serif" font-weight="700" font-size="14" letter-spacing="2">MAJOR LEAGUE</text>
+          <text x="10" y="62" fill="#fff" font-family="Oswald, sans-serif" font-weight="900" font-size="28" letter-spacing="3">CRICKET</text>
+          <rect x="10" y="75" width="30" height="100" rx="3" fill="#E31837" opacity="0.9"/>
+          <rect x="45" y="75" width="30" height="100" rx="3" fill="#E31837" opacity="0.9"/>
+          <path d="M100 75 L130 75 L130 175 L160 175 L160 140 L190 140 L190 175 L160 175 L160 75 Z" fill="#fff"/>
+          <polygon points="10,175 100,200 190,175" fill="#fff" opacity="0.8"/>
+        </svg>
+      </a>
+      <p>Major League Cricket is America's premier T20 cricket league, bringing world-class cricket to the United States.</p>
+      <div class="footer-social">
+        <a href="#" class="social-icon" title="Twitter/X">𝕏</a>
+        <a href="#" class="social-icon" title="Instagram">📷</a>
+        <a href="#" class="social-icon" title="YouTube">▶</a>
+        <a href="#" class="social-icon" title="Facebook">f</a>
+        <a href="#" class="social-icon" title="TikTok">♪</a>
+      </div>
+    </div>
+    <div>
+      <h4>Quick Links</h4>
+      <ul class="footer-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#matches">Matches</a></li>
+        <li><a href="#standings">Standings</a></li>
+        <li><a href="#news">News</a></li>
+        <li><a href="#" onclick="openModal('schedule')">Schedule</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>More</h4>
+      <ul class="footer-links">
+        <li><a href="#" onclick="openModal('players')">Players</a></li>
+        <li><a href="#" onclick="openModal('teams')">Teams</a></li>
+        <li><a href="#" onclick="openModal('fantasy')">Fantasy</a></li>
+        <li><a href="#" onclick="openModal('merch')">Merchandise</a></li>
+        <li><a href="#" onclick="openModal('tickets')">Tickets</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Legal</h4>
+      <ul class="footer-links">
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+        <li><a href="#">Cookie Policy</a></li>
+        <li><a href="#">Accessibility</a></li>
+        <li><a href="#">Contact Us</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Major League Cricket. All rights reserved.</p>
+    <p>Made with ❤️ for cricket fans in America</p>
+  </div>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<!-- Theme Toggle -->
+<button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="document.getElementById('modalOverlay').classList.remove('active')">✕</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<script>
+// Loader
+window.addEventListener('load',()=>{
+  setTimeout(()=>document.getElementById('loader').classList.add('hidden'),800);
+});
+
+// Particles
+(function(){
+  const canvas=document.getElementById('particles-canvas');
+  const ctx=canvas.getContext('2d');
+  let particles=[];
+  function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight}
+  resize();window.addEventListener('resize',resize);
+  for(let i=0;i<60;i++){
+    particles.push({
+      x:Math.random()*canvas.width,
+      y:Math.random()*canvas.height,
+      r:Math.random()*2+0.5,
+      dx:(Math.random()-0.5)*0.5,
+      dy:(Math.random()-0.5)*0.5,
+      o:Math.random()*0.3+0.1
+    });
+  }
+  function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p=>{
+      p.x+=p.dx;p.y+=p.dy;
+      if(p.x<0||p.x>canvas.width)p.dx*=-1;
+      if(p.y<0||p.y>canvas.height)p.dy*=-1;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(227,24,55,${p.o})`;ctx.fill();
+    });
+    // Draw connections
+    for(let i=0;i<particles.length;i++){
+      for(let j=i+1;j<particles.length;j++){
+        const dist=Math.hypot(particles[i].x-particles[j].x,particles[i].y-particles[j].y);
+        if(dist<150){
+          ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);
+          ctx.lineTo(particles[j].x,particles[j].y);
+          ctx.strokeStyle=`rgba(227,24,55,${0.05*(1-dist/150)})`;
+          ctx.lineWidth=0.5;ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(animate);
+  }
+  animate();
+})();
+
+// Scroll effects
+const topBar=document.getElementById('topBar');
+const backToTop=document.getElementById('backToTop');
+window.addEventListener('scroll',()=>{
+  topBar.classList.toggle('scrolled',window.scrollY>50);
+  backToTop.classList.toggle('visible',window.scrollY>600);
+  // Active nav link
+  const sections=document.querySelectorAll('section[id]');
+  let current='';
+  sections.forEach(s=>{
+    if(window.scrollY>=s.offsetTop-200)current=s.getAttribute('id');
+  });
+  document.querySelectorAll('.nav-link').forEach(l=>{
+    l.classList.toggle('active',l.getAttribute('href')==='#'+current);
+  });
+});
+
+// Reveal on scroll
+const revealObserver=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){e.target.classList.add('visible');revealObserver.unobserve(e.target)}
+  });
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>revealObserver.observe(el));
+
+// Counter animation
+const counterObserver=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const el=e.target;
+      const target=parseInt(el.dataset.target);
+      let current=0;
+      const step=target/60;
+      const timer=setInterval(()=>{
+        current+=step;
+        if(current>=target){current=target;clearInterval(timer)}
+        el.textContent=Math.floor(current);
+      },25);
+      counterObserver.unobserve(el);
+    }
+  });
+},{threshold:0.5});
+document.querySelectorAll('.stat-number[data-target]').forEach(el=>counterObserver.observe(el));
+
+// Mobile nav
+function toggleNav(){
+  const nav=document.getElementById('mainNav');
+  const hamburger=document.getElementById('hamburger');
+  nav.classList.toggle('open');
+  hamburger.classList.toggle('active');
+}
+document.querySelectorAll('.nav-link').forEach(l=>{
+  l.addEventListener('click',()=>{
+    document.getElementById('mainNav').classList.remove('open');
+    document.getElementById('hamburger').classList.remove('active');
+  });
+});
+
+// Theme toggle
+function toggleTheme(){
+  document.body.classList.toggle('light-mode');
+  const btn=document.getElementById('themeToggle');
+  btn.textContent=document.body.classList.contains('light-mode')?'☀️':'';
+}
+
+// Modal
+const modalData={
+  tickets:{title:'🎟️ Get Tickets',body:'<p>Experience the thrill of live T20 cricket! Choose from single match tickets, group packages, or full season passes.</p><div style="display:grid;gap:12px;margin-top:16px"><div style="background:var(--glass);padding:16px;border-radius:12px;border:1px solid var(--glass-border)"><strong style="color:var(--red)">General Admission</strong><br><span style="color:var(--gray-400);font-size:.85rem">From $25 — Great views of the action</span></div><div style="background:var(--glass);padding:16px;border-radius:12px;border:1px solid var(--glass-border)"><strong style="color:var(--gold)">Premium Seating</strong><br><span style="color:var(--gray-400);font-size:.85rem">From $75 — Reserved seats + lounge access</span></div><div style="background:var(--glass);padding:16px;border-radius:12px;border:1px solid var(--glass-border)"><strong style="color:var(--red)">VIP Experience</strong><br><span style="color:var(--gray-400);font-size:.85rem">From $200 — Meet & greet, open bar, best seats</span></div></div><a href="#" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:20px" onclick="launchConfetti()">Buy Tickets Now 🎉</a>'},
+  subscribe:{title:' Subscribe to MLC',body:'<p>Get exclusive content, early ticket access, and behind-the-scenes updates delivered to your inbox.</p><div style="display:flex;flex-direction:column;gap:12px;margin-top:16px"><input type="email" placeholder="Your email" style="padding:14px;background:var(--glass);border:1px solid var(--glass-border);border-radius:12px;color:#fff;font-size:.9rem;outline:none"><input type="text" placeholder="Your name" style="padding:14px;background:var(--glass);border:1px solid var(--glass-border);border-radius:12px;color:#fff;font-size:.9rem;outline:none"></div><button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:16px" onclick="launchConfetti();document.getElementById(\'modalOverlay\').classList.remove(\'active\')">Subscribe Now →</button>'},
+  players:{title:'🏏 Players Hub',body:'<p>Browse 150+ international cricket stars competing in MLC 2026.</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px"><div style="background:var(--glass);padding:12px;border-radius:10px;text-align:center;border:1px solid var(--glass-border)"><div style="font-size:1.5rem">🇮🇳</div><strong style="font-size:.85rem">Rohit Sharma</strong><div style="font-size:.75rem;color:var(--gray-500)">MI New York</div></div><div style="background:var(--glass);padding:12px;border-radius:10px;text-align:center;border:1px solid var(--glass-border)"><div style="font-size:1.5rem">🇦🇫</div><strong style="font-size:.85rem">Rashid Khan</strong><div style="font-size:.75rem;color:var(--gray-500)">Washington Freedom</div></div><div style="background:var(--glass);padding:12px;border-radius:10px;text-align:center;border:1px solid var(--glass-border)"><div style="font-size:1.5rem">🇮</div><strong style="font-size:.85rem">Shreyas Iyer</strong><div style="font-size:.75rem;color:var(--gray-500)">Seattle Orcas</div></div><div style="background:var(--glass);padding:12px;border-radius:10px;text-align:center;border:1px solid var(--glass-border)"><div style="font-size:1.5rem">󠁧󠁥󠁧</div><strong style="font-size:.85rem">Jos Buttler</strong><div style="font-size:.75rem;color:var(--gray-500)">SF Unicorns</div></div></div><p style="text-align:center;margin-top:16px"><a href="#" style="color:var(--red);font-size:.9rem;font-weight:600">View All 150+ Players →</a></p>'},
+  teams:{title:'🏟️ Teams',body:'<p>Six franchise teams representing America\'s biggest cricket markets.</p><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:16px"><div style="background:linear-gradient(135deg,#001F54,#003380);padding:16px;border-radius:12px;text-align:center"><strong>MI New York</strong><div style="font-size:.75rem;opacity:.7">Est. 2023</div></div><div style="background:linear-gradient(135deg,#16A34A,#15803D);padding:16px;border-radius:12px;text-align:center"><strong>LA Knight Riders</strong><div style="font-size:.75rem;opacity:.7">Est. 2023</div></div><div style="background:linear-gradient(135deg,#FFD700,#FFA500);padding:16px;border-radius:12px;text-align:center;color:#000"><strong>Seattle Orcas</strong><div style="font-size:.75rem;opacity:.7">Est. 2023</div></div><div style="background:linear-gradient(135deg,#E31837,#B71C1C);padding:16px;border-radius:12px;text-align:center"><strong>Washington Freedom</strong><div style="font-size:.75rem;opacity:.7">Est. 2023</div></div><div style="background:linear-gradient(135deg,#6B21A8,#4C1D95);padding:16px;border-radius:12px;text-align:center"><strong>Texas Super Kings</strong><div style="font-size:.75rem;opacity:.7">Est. 2023</div></div><div style="background:linear-gradient(135deg,#E31837,#B71C1C);padding:16px;border-radius:12px;text-align:center"><strong>SF Unicorns</strong><div style="font-size:.75rem;opacity:.7">Est. 2023</div></div></div>'},
+  schedule:{title:'📋 Season Schedule',body:'<p>MLC 2026 Season runs from July 1 - August 5, 2026.</p><div style="margin-top:16px"><div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--glass-border)"><span>Group Stage</span><span style="color:var(--red);font-weight:600">Jul 1 - Jul 28</span></div><div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--glass-border)"><span>Qualifier 1</span><span style="color:var(--gold);font-weight:600">Jul 30</span></div><div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--glass-border)"><span>Eliminator</span><span style="color:var(--gold);font-weight:600">Jul 31</span></div><div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--glass-border)"><span>Qualifier 2</span><span style="color:var(--gold);font-weight:600">Aug 2</span></div><div style="display:flex;justify-content:space-between;padding:12px 0"><span style="font-weight:700;color:var(--red)">🏆 Final</span><span style="color:var(--gold);font-weight:700">Aug 5</span></div></div>'},
+  stats:{title:'📊 Statistics Leaders',body:'<p>Top performers in MLC 2026 Season so far.</p><div style="margin-top:16px"><h4 style="margin-bottom:8px;color:var(--red)">🏏 Most Runs</h4><div style="background:var(--glass);padding:12px;border-radius:10px;margin-bottom:8px;display:flex;justify-content:space-between"><span>1. Rohit Sharma (MI)</span><span style="color:var(--gold);font-weight:700">342 runs</span></div><div style="background:var(--glass);padding:12px;border-radius:10px;margin-bottom:8px;display:flex;justify-content:space-between"><span>2. Shreyas Iyer (SE)</span><span style="color:var(--gold);font-weight:700">289 runs</span></div><div style="background:var(--glass);padding:12px;border-radius:10px;display:flex;justify-content:space-between"><span>3. Jos Buttler (SF)</span><span style="color:var(--gold);font-weight:700">267 runs</span></div><h4 style="margin:16px 0 8px;color:var(--red)">🎯 Most Wickets</h4><div style="background:var(--glass);padding:12px;border-radius:10px;margin-bottom:8px;display:flex;justify-content:space-between"><span>1. Rashid Khan (WA)</span><span style="color:var(--gold);font-weight:700">18 wkts</span></div><div style="background:var(--glass);padding:12px;border-radius:10px;margin-bottom:8px;display:flex;justify-content:space-between"><span>2. Jasprit Bumrah (MI)</span><span style="color:var(--gold);font-weight:700">15 wkts</span></div></div>'},
+  fantasy:{title:'⭐ Fantasy Cricket',body:'<p>Build your dream team from MLC stars and compete for amazing prizes!</p><div style="background:linear-gradient(135deg,rgba(227,24,55,0.2),rgba(255,215,0,0.1));padding:20px;border-radius:12px;margin-top:16px;text-align:center"><div style="font-size:2rem;margin-bottom:8px">🏆</div><strong style="font-size:1.2rem">Grand Prize Pool</strong><div style="font-family:Oswald;font-size:2rem;color:var(--gold);margin:8px 0">$50,000</div><p style="font-size:.85rem;color:var(--gray-400)">Weekly contests + season-long league</p></div><button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:16px" onclick="launchConfetti()">Join Fantasy League →</button>'},
+  merch:{title:'🛒 Official Merchandise',body:'<p>Rep your team with official MLC gear.</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px"><div style="background:var(--glass);padding:16px;border-radius:12px;text-align:center;border:1px solid var(--glass-border)"><div style="font-size:2rem;margin-bottom:8px">👕</div><strong style="font-size:.85rem">Team Jerseys</strong><div style="font-size:.8rem;color:var(--gray-500)">From $59.99</div></div><div style="background:var(--glass);padding:16px;border-radius:12px;text-align:center;border:1px solid var(--glass-border)"><div style="font-size:2rem;margin-bottom:8px">🧢</div><strong style="font-size:.85rem">Caps & Hats</strong><div style="font-size:.8rem;color:var(--gray-500)">From $24.99</div></div><div style="background:var(--glass);padding:16px;border-radius:12px;text-align:center;border:1px solid var(--glass-border)"><div style="font-size:2rem;margin-bottom:8px">🏏</div><strong style="font-size:.85rem">Mini Bats</strong><div style="font-size:.8rem;color:var(--gray-500)">From $34.99</div></div><div style="background:var(--glass);padding:16px;border-radius:12px;text-align:center;border:1px solid var(--glass-border)"><div style="font-size:2rem;margin-bottom:8px">🧣</div><strong style="font-size:.85rem">Scarves</strong><div style="font-size:.8rem;color:var(--gray-500)">From $19.99</div></div></div><p style="text-align:center;margin-top:16px"><a href="#" style="color:var(--red);font-size:.9rem;font-weight:600">Shop All Merchandise →</a></p>'},
+  videos:{title:'🎬 Video Highlights',body:'<p>Watch the best moments from MLC 2026.</p><div style="margin-top:16px"><div style="background:var(--glass);padding:16px;border-radius:12px;margin-bottom:10px;border:1px solid var(--glass-border);cursor:pointer;display:flex;align-items:center;gap:12px"><div style="font-size:1.5rem">▶️</div><div><strong style="font-size:.9rem">Seattle vs Texas — Last Over Thriller</strong><div style="font-size:.75rem;color:var(--gray-500)">3:42 • 1.2M views</div></div></div><div style="background:var(--glass);padding:16px;border-radius:12px;margin-bottom:10px;border:1px solid var(--glass-border);cursor:pointer;display:flex;align-items:center;gap:12px"><div style="font-size:1.5rem">▶️</div><div><strong style="font-size:.9rem">Rohit Sharma\'s Best Shots — Compilation</strong><div style="font-size:.75rem;color:var(--gray-500)">5:18 • 890K views</div></div></div><div style="background:var(--glass);padding:16px;border-radius:12px;margin-bottom:10px;border:1px solid var(--glass-border);cursor:pointer;display:flex;align-items:center;gap:12px"><div style="font-size:1.5rem">▶️</div><div><strong style="font-size:.9rem">Opening Ceremony Highlights</strong><div style="font-size:.75rem;color:var(--gray-500)">8:05 • 2.1M views</div></div></div></div>'},
+  community:{title:'💬 Community',body:'<p>Join the MLC family! Connect with fellow cricket fans.</p><div style="display:grid;gap:12px;margin-top:16px"><div style="background:var(--glass);padding:16px;border-radius:12px;border:1px solid var(--glass-border)"><strong>🏟️ Local Cricket Clubs</strong><p style="font-size:.85rem;color:var(--gray-400);margin-top:4px">Find cricket clubs near you and join the community.</p></div><div style="background:var(--glass);padding:16px;border-radius:12px;border:1px solid var(--glass-border)"><strong>📅 Fan Events</strong><p style="font-size:.85rem;color:var(--gray-400);margin-top:4px">Meet-and-greets, watch parties, and cricket clinics.</p></div><div style="background:var(--glass);padding:16px;border-radius:12px;border:1px solid var(--glass-border)"><strong>🎮 Fantasy League</strong><p style="font-size:.85rem;color:var(--gray-400);margin-top:4px">Compete with friends in our official fantasy league.</p></div></div><p style="text-align:center;margin-top:16px"><a href="#" style="color:var(--red);font-size:.9rem;font-weight:600">Join Community →</a></p>'}
+};
+
+function openModal(type){
+  event&&event.preventDefault();
+  const data=modalData[type];
+  if(!data)return;
+  document.getElementById('modalContent').innerHTML=`<h3>${data.title}</h3>${data.body}`;
+  document.getElementById('modalOverlay').classList.add('active');
+}
+function closeModal(e){
+  if(e.target===document.getElementById('modalOverlay')){
+    document.getElementById('modalOverlay').classList.remove('active');
+  }
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')document.getElementById('modalOverlay').classList.remove('active');
+});
+
+// Newsletter
+function handleSubscribe(e){
+  e.preventDefault();
+  launchConfetti();
+  e.target.reset();
+  alert('🎉 Welcome to the MLC family! Check your inbox for a confirmation email.');
+}
+
+// Confetti
+function launchConfetti(){
+  const colors=['#E31837','#FFD700','#001F54','#FFFFFF','#FF6B6B','#4ECDC4'];
+  for(let i=0;i<50;i++){
+    const piece=document.createElement('div');
+    piece.className='confetti-piece';
+    piece.style.left=Math.random()*100+'vw';
+    piece.style.background=colors[Math.floor(Math.random()*colors.length)];
+    piece.style.animationDuration=(Math.random()*2+2)+'s';
+    piece.style.animationDelay=Math.random()*0.5+'s';
+    piece.style.borderRadius=Math.random()>0.5?'50%':'2px';
+    piece.style.width=(Math.random()*8+5)+'px';
+    piece.style.height=(Math.random()*8+5)+'px';
+    document.body.appendChild(piece);
+    setTimeout(()=>piece.remove(),4000);
+  }
+}
+
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',function(e){
+    const target=document.querySelector(this.getAttribute('href'));
+    if(target){e.preventDefault();target.scrollIntoView({behavior:'smooth',block:'start'})}
+  });
+});
+</script>
+</body>
+</html>
+
