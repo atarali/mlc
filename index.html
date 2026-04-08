@@ -371,6 +371,7 @@
       display: flex; gap: 1.5rem; overflow-x: auto; padding: 1rem 0 1.5rem;
       scrollbar-width: none; max-width: 1200px; margin: 0 auto;
       scroll-snap-type: x mandatory;
+	  position: relative;
     }
     .teams-strip::-webkit-scrollbar { display: none; }
     .team-card {
@@ -717,6 +718,35 @@
     .pt-row .val { text-align: center; color: rgba(255,255,255,0.7); }
     .qual-bar { width: 4px; height: 32px; background: var(--mlc-red); border-radius: 2px; position: absolute; left: 0; }
     .qualified { position: relative; }
+    
+    .teams-strip {
+  /* existing styles... */
+  mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+}
+.teams-strip::after {
+  content: '→';
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255,255,255,0.5);
+  font-size: 1.5rem;
+  font-weight: 300;
+  pointer-events: none;
+  z-index: 10;
+  animation: slideHint 1.5s ease-in-out infinite;
+  text-shadow: 0 0 10px rgba(232,25,44,0.5);
+}
+@keyframes slideHint {
+  0%, 100% { opacity: 0.4; transform: translateY(-50%) translateX(0); }
+  50% { opacity: 1; transform: translateY(-50%) translateX(4px); }
+}
+/* Hide arrow when scrolled to end (optional enhancement) */
+.teams-strip.scrolled-end::after {
+  opacity: 0;
+  pointer-events: none;
+}
   </style>
 </head>
 <body>
@@ -1632,6 +1662,43 @@ setInterval(() => {
     }
   }
 }, 4000);
+  
+ // Enable drag-to-scroll for teams strip
+(function() {
+  const slider = document.getElementById('teamsStrip');
+  if (!slider) return;
+  let isDown = false, startX, scrollLeft;
+  slider.addEventListener('mousedown', e => {
+    isDown = true;
+    slider.classList.add('active');
+    startX = e.pageX - slider.offsetLeft;
+    scrollLeft = slider.scrollLeft;
+  });
+  slider.addEventListener('mouseleave', () => { isDown = false; slider.classList.remove('active'); });
+  slider.addEventListener('mouseup', () => { isDown = false; slider.classList.remove('active'); });
+  slider.addEventListener('mousemove', e => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - slider.offsetLeft;
+    const walk = (x - startX) * 2;
+    slider.scrollLeft = scrollLeft - walk;
+  });
+})();
+// Hide scroll hint when teams strip is fully scrolled
+(function() {
+  const strip = document.getElementById('teamsStrip');
+  if (!strip) return;
+  const checkScroll = () => {
+    if (strip.scrollLeft + strip.clientWidth >= strip.scrollWidth - 10) {
+      strip.classList.add('scrolled-end');
+    } else {
+      strip.classList.remove('scrolled-end');
+    }
+  };
+  strip.addEventListener('scroll', checkScroll);
+  window.addEventListener('resize', checkScroll);
+  setTimeout(checkScroll, 500); // initial check
+})(); 
 
 // ═══════════════════════════════ WELCOME TOAST ═══════════════════════════════
 setTimeout(() => {
