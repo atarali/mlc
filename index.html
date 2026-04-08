@@ -1,363 +1,1642 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Major League Cricket | Official Home</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --mlc-blue: #0047AB;
-            --mlc-red: #E31B23;
-            --mlc-dark: #0A0E1A;
-            --mlc-accent: #00F2FF;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Major League Cricket – Official Home</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    :root {
+      --mlc-navy: #0a1628;
+      --mlc-blue: #1a2e5a;
+      --mlc-red: #e8192c;
+      --mlc-crimson: #c0001a;
+      --mlc-white: #ffffff;
+      --mlc-silver: #f0f4f8;
+      --mlc-gold: #f5c518;
+      --mlc-accent: #00c2ff;
+    }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--mlc-dark);
-            color: white;
-            overflow-x: hidden;
-        }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        .orbitron { font-family: 'Orbitron', sans-serif; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--mlc-navy);
+      color: var(--mlc-white);
+      overflow-x: hidden;
+    }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0A0E1A; }
-        ::-webkit-scrollbar-thumb { background: var(--mlc-blue); border-radius: 10px; }
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--mlc-navy); }
+    ::-webkit-scrollbar-thumb { background: var(--mlc-red); border-radius: 3px; }
 
-        /* Hero Section Gradient */
-        .hero-gradient {
-            background: linear-gradient(rgba(10, 14, 26, 0.7), rgba(10, 14, 26, 1)), 
-                        url('https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&q=80&w=2000');
-            background-size: cover;
-            background-position: center;
-        }
+    /* ── Particle Canvas ── */
+    #particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
 
-        /* Nav Grid Card */
-        .nav-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer;
-        }
+    /* ── Navbar ── */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem;
+      height: 70px;
+      background: rgba(10,22,40,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(232,25,44,0.3);
+      transition: all 0.3s;
+    }
+    .navbar.scrolled {
+      height: 60px;
+      background: rgba(10,22,40,0.97);
+      box-shadow: 0 4px 30px rgba(232,25,44,0.2);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 0.75rem; cursor: pointer; }
+    .nav-logo img { height: 44px; filter: drop-shadow(0 0 8px rgba(232,25,44,0.6)); }
+    .nav-logo span {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.4rem; font-weight: 800;
+      letter-spacing: 1px;
+      background: linear-gradient(135deg, #fff 0%, #00c2ff 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .nav-links { display: flex; align-items: center; gap: 0.25rem; }
+    .nav-links a {
+      padding: 0.4rem 0.9rem;
+      font-size: 0.82rem; font-weight: 600; letter-spacing: 0.5px;
+      color: rgba(255,255,255,0.8);
+      text-decoration: none; border-radius: 6px;
+      transition: all 0.2s; position: relative; text-transform: uppercase;
+    }
+    .nav-links a:hover { color: #fff; background: rgba(232,25,44,0.15); }
+    .nav-links a.active { color: #fff; }
+    .nav-links a.active::after {
+      content: ''; position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%);
+      width: 20px; height: 2px; background: var(--mlc-red); border-radius: 2px;
+    }
+    .nav-cta {
+      background: linear-gradient(135deg, var(--mlc-red), var(--mlc-crimson));
+      color: #fff !important; border-radius: 8px !important;
+      padding: 0.45rem 1.1rem !important;
+      box-shadow: 0 4px 15px rgba(232,25,44,0.4);
+    }
+    .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(232,25,44,0.6) !important; }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: #fff; border-radius: 2px; transition: all 0.3s; }
 
-        .nav-card:hover {
-            transform: translateY(-10px);
-            background: rgba(0, 71, 171, 0.2);
-            border-color: var(--mlc-accent);
-            box-shadow: 0 0 20px rgba(0, 242, 255, 0.3);
-        }
+    /* ── Hero ── */
+    .hero {
+      position: relative; min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; overflow: hidden;
+      padding: 90px 1rem 2rem;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: 
+        radial-gradient(ellipse at 20% 50%, rgba(232,25,44,0.15) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(0,194,255,0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at 60% 80%, rgba(26,46,90,0.8) 0%, transparent 60%),
+        linear-gradient(160deg, #0a1628 0%, #12203d 50%, #0a1628 100%);
+      z-index: 1;
+    }
+    .hero-grid {
+      position: absolute; inset: 0; z-index: 2; opacity: 0.04;
+      background-image: 
+        linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .hero-content { position: relative; z-index: 3; max-width: 900px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(232,25,44,0.15); border: 1px solid rgba(232,25,44,0.4);
+      color: #ff6b7a; padding: 0.4rem 1rem; border-radius: 50px;
+      font-size: 0.78rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
+      margin-bottom: 1.5rem; animation: fadeInDown 0.8s ease forwards;
+    }
+    .hero-badge .dot { width: 6px; height: 6px; background: var(--mlc-red); border-radius: 50%; animation: blink 1.5s infinite; }
+    .hero-logo {
+      width: 160px; margin: 0 auto 1.5rem;
+      filter: drop-shadow(0 0 40px rgba(232,25,44,0.5));
+      animation: heroLogoFloat 3s ease-in-out infinite, fadeInUp 1s ease 0.2s both;
+    }
+    .hero-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(3rem, 8vw, 6.5rem);
+      font-weight: 900; line-height: 0.95;
+      text-transform: uppercase; letter-spacing: -1px;
+      animation: fadeInUp 1s ease 0.4s both;
+    }
+    .hero-title .line1 { display: block; color: #fff; }
+    .hero-title .line2 {
+      display: block;
+      background: linear-gradient(135deg, var(--mlc-red) 0%, #ff6b7a 50%, var(--mlc-red) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-size: 200% auto; animation: shimmer 3s linear infinite;
+    }
+    .hero-title .line3 { display: block; color: var(--mlc-accent); }
+    .hero-sub {
+      margin: 1.5rem auto 2.5rem;
+      max-width: 600px;
+      font-size: 1.05rem; font-weight: 400; line-height: 1.7;
+      color: rgba(255,255,255,0.7);
+      animation: fadeInUp 1s ease 0.6s both;
+    }
+    .hero-btns {
+      display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+      animation: fadeInUp 1s ease 0.8s both;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: linear-gradient(135deg, var(--mlc-red), var(--mlc-crimson));
+      color: #fff; padding: 0.85rem 2rem; border-radius: 12px;
+      font-weight: 700; font-size: 0.9rem; letter-spacing: 0.5px; text-decoration: none;
+      box-shadow: 0 8px 30px rgba(232,25,44,0.4);
+      transition: all 0.3s; border: none; cursor: pointer;
+    }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(232,25,44,0.5); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(255,255,255,0.08); color: #fff;
+      padding: 0.85rem 2rem; border-radius: 12px;
+      font-weight: 700; font-size: 0.9rem; letter-spacing: 0.5px; text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(10px);
+      transition: all 0.3s; cursor: pointer;
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.15); transform: translateY(-3px); }
+    .hero-stats {
+      display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;
+      margin-top: 3.5rem;
+      animation: fadeInUp 1s ease 1s both;
+    }
+    .hero-stat { text-align: center; }
+    .hero-stat .num {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 2.5rem; font-weight: 900; color: #fff;
+      line-height: 1;
+    }
+    .hero-stat .num span { color: var(--mlc-red); }
+    .hero-stat .lbl { font-size: 0.72rem; color: rgba(255,255,255,0.5); letter-spacing: 1px; text-transform: uppercase; }
+    .hero-divider { width: 1px; height: 50px; background: rgba(255,255,255,0.15); align-self: center; }
+    .scroll-indicator {
+      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+      color: rgba(255,255,255,0.4); font-size: 0.7rem; letter-spacing: 1px; text-transform: uppercase;
+      animation: bounce 2s ease-in-out infinite;
+    }
+    .scroll-indicator i { font-size: 1.2rem; }
 
-        .nav-card i {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            color: var(--mlc-accent);
-        }
+    /* ── Live Ticker ── */
+    .ticker-bar {
+      position: relative; z-index: 10;
+      background: linear-gradient(135deg, var(--mlc-red), var(--mlc-crimson));
+      padding: 0.55rem 0; overflow: hidden;
+    }
+    .ticker-inner { display: flex; align-items: center; white-space: nowrap; }
+    .ticker-label {
+      background: rgba(0,0,0,0.3); color: #fff;
+      padding: 0.2rem 0.8rem; font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase; border-radius: 4px;
+      margin-right: 1rem; flex-shrink: 0; position: relative; z-index: 2;
+      margin-left: 1rem;
+    }
+    .ticker-track {
+      display: flex; animation: ticker 30s linear infinite;
+      gap: 3rem;
+    }
+    .ticker-item {
+      font-size: 0.82rem; font-weight: 600; color: #fff; letter-spacing: 0.3px;
+      display: flex; align-items: center; gap: 0.5rem; white-space: nowrap;
+    }
+    .ticker-item .sep { opacity: 0.4; }
 
-        /* Glass Header */
-        header {
-            background: rgba(10, 14, 26, 0.8);
-            backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
+    /* ── Section Shared ── */
+    section { position: relative; z-index: 5; }
+    .section-header { text-align: center; margin-bottom: 3rem; }
+    .section-tag {
+      display: inline-block;
+      background: rgba(232,25,44,0.1); border: 1px solid rgba(232,25,44,0.3);
+      color: #ff6b7a; padding: 0.3rem 0.9rem; border-radius: 50px;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+    .section-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 900; text-transform: uppercase; line-height: 1.1;
+    }
+    .section-title span { color: var(--mlc-red); }
+    .section-sub { color: rgba(255,255,255,0.55); font-size: 0.95rem; margin-top: 0.6rem; }
 
-        /* Animations */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+    /* ── Quick Info ── */
+    .info-section {
+      padding: 5rem 2rem;
+      background: linear-gradient(180deg, rgba(10,22,40,0) 0%, rgba(15,28,52,1) 100%);
+    }
+    .info-cards {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem; max-width: 1200px; margin: 0 auto;
+    }
+    .info-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px; padding: 2rem;
+      transition: all 0.4s; position: relative; overflow: hidden;
+      cursor: pointer;
+    }
+    .info-card::before {
+      content: ''; position: absolute; inset: 0; opacity: 0;
+      background: linear-gradient(135deg, rgba(232,25,44,0.1), rgba(0,194,255,0.05));
+      transition: opacity 0.4s;
+    }
+    .info-card:hover { transform: translateY(-8px); border-color: rgba(232,25,44,0.4); }
+    .info-card:hover::before { opacity: 1; }
+    .info-card-icon {
+      width: 56px; height: 56px; border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; margin-bottom: 1.2rem;
+    }
+    .info-card h3 { font-family: 'Barlow Condensed', sans-serif; font-size: 1.3rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .info-card p { font-size: 0.88rem; color: rgba(255,255,255,0.6); line-height: 1.6; }
+    .info-card .card-link {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      margin-top: 1rem; color: var(--mlc-accent); font-size: 0.8rem; font-weight: 600;
+      text-decoration: none; transition: gap 0.2s;
+    }
+    .info-card .card-link:hover { gap: 0.7rem; }
 
-        .animate-fade-up {
-            animation: fadeInUp 0.8s ease forwards;
-        }
+    /* ── Navigation Grid ── */
+    .nav-grid-section {
+      padding: 5rem 2rem;
+      background: rgba(8,18,36,0.8);
+    }
+    .nav-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem; max-width: 1200px; margin: 0 auto;
+    }
+    .nav-card {
+      position: relative; border-radius: 20px; overflow: hidden;
+      aspect-ratio: 1; cursor: pointer; text-decoration: none;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      transition: all 0.4s;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .nav-card::before {
+      content: ''; position: absolute; inset: 0;
+      opacity: 0; transition: opacity 0.4s;
+    }
+    .nav-card:hover { transform: translateY(-8px) scale(1.02); border-color: transparent; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+    .nav-card:hover::before { opacity: 1; }
+    .nav-card .nc-icon {
+      font-size: 2.8rem; margin-bottom: 0.8rem; z-index: 2; position: relative;
+      transition: transform 0.4s;
+    }
+    .nav-card:hover .nc-icon { transform: scale(1.2) rotate(-5deg); }
+    .nav-card .nc-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.2rem; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 1px; color: #fff; z-index: 2; position: relative;
+    }
+    .nav-card .nc-sub {
+      font-size: 0.72rem; color: rgba(255,255,255,0.6); margin-top: 0.25rem;
+      z-index: 2; position: relative;
+    }
+    .nav-card .nc-arrow {
+      position: absolute; bottom: 1rem; right: 1rem;
+      width: 30px; height: 30px; border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; color: #fff; z-index: 2;
+      transition: all 0.3s;
+    }
+    .nav-card:hover .nc-arrow { background: rgba(255,255,255,0.25); transform: rotate(45deg); }
+    /* Nav card colors */
+    .nc-1::before { background: linear-gradient(135deg, rgba(232,25,44,0.7), rgba(192,0,26,0.9)); }
+    .nc-2::before { background: linear-gradient(135deg, rgba(26,46,90,0.8), rgba(0,100,200,0.8)); }
+    .nc-3::before { background: linear-gradient(135deg, rgba(0,100,0,0.8), rgba(0,160,0,0.7)); }
+    .nc-4::before { background: linear-gradient(135deg, rgba(100,0,150,0.8), rgba(160,0,200,0.7)); }
+    .nc-5::before { background: linear-gradient(135deg, rgba(200,100,0,0.8), rgba(232,165,25,0.7)); }
+    .nc-6::before { background: linear-gradient(135deg, rgba(0,100,150,0.8), rgba(0,194,255,0.7)); }
+    .nc-7::before { background: linear-gradient(135deg, rgba(150,20,20,0.8), rgba(220,80,80,0.7)); }
+    .nc-8::before { background: linear-gradient(135deg, rgba(20,100,80,0.8), rgba(0,180,140,0.7)); }
+    /* Featured nav card */
+    .nav-card.featured {
+      grid-column: span 2; aspect-ratio: 2/1;
+    }
 
-        .team-badge {
-            transition: transform 0.3s ease;
-        }
+    /* ── Season Countdown ── */
+    .countdown-section {
+      padding: 4rem 2rem;
+      background: linear-gradient(135deg, rgba(232,25,44,0.08) 0%, rgba(26,46,90,0.2) 100%);
+      border-top: 1px solid rgba(232,25,44,0.15);
+      border-bottom: 1px solid rgba(232,25,44,0.15);
+    }
+    .countdown-wrap { max-width: 800px; margin: 0 auto; text-align: center; }
+    .countdown-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+      color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;
+    }
+    .countdown-event {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 900;
+      margin-bottom: 2rem;
+    }
+    .countdown-event span { color: var(--mlc-red); }
+    .countdown-boxes {
+      display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap;
+    }
+    .cd-box {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px; padding: 1.5rem 2rem; min-width: 100px; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .cd-box::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--mlc-red), var(--mlc-accent));
+    }
+    .cd-num {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 3.5rem; font-weight: 900; line-height: 1; color: #fff;
+    }
+    .cd-lbl { font-size: 0.7rem; color: rgba(255,255,255,0.4); letter-spacing: 2px; text-transform: uppercase; margin-top: 0.3rem; }
 
-        .team-badge:hover {
-            transform: scale(1.1);
-        }
+    /* ── Teams Strip ── */
+    .teams-section { padding: 5rem 2rem; background: rgba(10,22,40,0.9); }
+    .teams-strip {
+      display: flex; gap: 1.5rem; overflow-x: auto; padding: 1rem 0 1.5rem;
+      scrollbar-width: none; max-width: 1200px; margin: 0 auto;
+      scroll-snap-type: x mandatory;
+    }
+    .teams-strip::-webkit-scrollbar { display: none; }
+    .team-card {
+      flex: 0 0 200px; background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08); border-radius: 16px;
+      padding: 1.5rem 1rem; text-align: center; cursor: pointer;
+      transition: all 0.3s; scroll-snap-align: start; position: relative; overflow: hidden;
+    }
+    .team-card::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+      transform: scaleX(0); transition: transform 0.3s;
+    }
+    .team-card:hover { transform: translateY(-6px); border-color: rgba(255,255,255,0.2); }
+    .team-card:hover::after { transform: scaleX(1); }
+    .team-logo { font-size: 2.5rem; margin-bottom: 0.8rem; }
+    .team-name { font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 700; line-height: 1.2; }
+    .team-city { font-size: 0.72rem; color: rgba(255,255,255,0.5); margin-top: 0.25rem; }
+    .team-wins { font-size: 0.78rem; color: var(--mlc-accent); font-weight: 600; margin-top: 0.5rem; }
 
-        .btn-primary {
-            background: linear-gradient(90deg, var(--mlc-blue), #0066ff);
-            transition: all 0.3s ease;
-        }
+    /* ── Featured Match ── */
+    .matches-section { padding: 5rem 2rem; background: rgba(12,24,44,0.95); }
+    .matches-grid { max-width: 1100px; margin: 0 auto; display: grid; gap: 1.25rem; }
+    .match-card {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px; padding: 1.5rem 2rem;
+      display: flex; align-items: center; gap: 1.5rem;
+      transition: all 0.3s; position: relative; overflow: hidden;
+    }
+    .match-card:hover { border-color: rgba(232,25,44,0.3); background: rgba(232,25,44,0.05); transform: translateX(4px); }
+    .match-date-box {
+      flex-shrink: 0; text-align: center; width: 60px;
+    }
+    .match-date-box .mday { font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 900; line-height: 1; }
+    .match-date-box .mmon { font-size: 0.68rem; color: rgba(255,255,255,0.5); letter-spacing: 1px; text-transform: uppercase; }
+    .match-teams {
+      flex: 1; display: flex; align-items: center; gap: 1rem;
+    }
+    .match-team { flex: 1; }
+    .match-team .mt-name { font-family: 'Barlow Condensed', sans-serif; font-size: 1.15rem; font-weight: 800; }
+    .match-team .mt-city { font-size: 0.72rem; color: rgba(255,255,255,0.5); }
+    .match-vs {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 1.2rem; font-weight: 900;
+      color: var(--mlc-red); width: 40px; text-align: center;
+    }
+    .match-info { flex-shrink: 0; text-align: right; }
+    .match-info .mi-venue { font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.3rem; }
+    .match-status {
+      display: inline-block; padding: 0.2rem 0.6rem; border-radius: 6px;
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
+    }
+    .status-live { background: rgba(232,25,44,0.2); color: #ff6b7a; border: 1px solid rgba(232,25,44,0.4); }
+    .status-upcoming { background: rgba(0,194,255,0.1); color: var(--mlc-accent); border: 1px solid rgba(0,194,255,0.3); }
+    .status-result { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.1); }
 
-        .btn-primary:hover {
-            box-shadow: 0 0 15px var(--mlc-blue);
-            transform: scale(1.05);
-        }
-    </style>
+    /* ── Leaderboard ── */
+    .leaders-section { padding: 5rem 2rem; background: rgba(10,22,40,0.9); }
+    .leaders-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+    .leader-table { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; overflow: hidden; }
+    .lt-header {
+      background: rgba(232,25,44,0.15); border-bottom: 1px solid rgba(232,25,44,0.2);
+      padding: 1rem 1.5rem; display: flex; align-items: center; gap: 0.5rem;
+    }
+    .lt-header h3 { font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+    .lt-row {
+      display: flex; align-items: center; gap: 1rem; padding: 0.9rem 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.2s;
+    }
+    .lt-row:hover { background: rgba(255,255,255,0.03); }
+    .lt-rank {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 900;
+      width: 24px; text-align: center;
+    }
+    .lt-rank.gold { color: var(--mlc-gold); }
+    .lt-rank.silver { color: #c0c0c0; }
+    .lt-rank.bronze { color: #cd7f32; }
+    .lt-avatar {
+      width: 36px; height: 36px; border-radius: 50%; overflow: hidden;
+      background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem; font-weight: 700; flex-shrink: 0;
+    }
+    .lt-name { flex: 1; font-size: 0.88rem; font-weight: 600; }
+    .lt-team { font-size: 0.72rem; color: rgba(255,255,255,0.5); }
+    .lt-value { font-family: 'Barlow Condensed', sans-serif; font-size: 1.3rem; font-weight: 900; color: var(--mlc-accent); }
+    .lt-unit { font-size: 0.65rem; color: rgba(255,255,255,0.4); text-align: right; }
+
+    /* ── News ── */
+    .news-section { padding: 5rem 2rem; background: rgba(12,24,44,0.8); }
+    .news-grid {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 1.5rem;
+    }
+    .news-card {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px; overflow: hidden; cursor: pointer; transition: all 0.3s;
+      display: flex; flex-direction: column;
+    }
+    .news-card:hover { transform: translateY(-6px); border-color: rgba(232,25,44,0.3); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+    .news-img {
+      height: 200px; display: flex; align-items: center; justify-content: center;
+      font-size: 3rem; position: relative; overflow: hidden;
+    }
+    .news-card.featured .news-img { height: 260px; }
+    .news-body { padding: 1.25rem; flex: 1; display: flex; flex-direction: column; }
+    .news-cat {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .news-title { font-family: 'Barlow Condensed', sans-serif; font-size: 1.15rem; font-weight: 800; line-height: 1.3; margin-bottom: 0.5rem; }
+    .news-card.featured .news-title { font-size: 1.5rem; }
+    .news-excerpt { font-size: 0.82rem; color: rgba(255,255,255,0.55); line-height: 1.5; flex: 1; }
+    .news-meta { display: flex; align-items: center; gap: 0.75rem; margin-top: 1rem; font-size: 0.72rem; color: rgba(255,255,255,0.4); }
+    .news-meta i { color: rgba(255,255,255,0.3); }
+
+    /* ── Social / Fan Zone ── */
+    .fan-section {
+      padding: 4rem 2rem;
+      background: linear-gradient(135deg, rgba(26,46,90,0.6) 0%, rgba(10,22,40,0.9) 100%);
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .social-grid {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem;
+    }
+    .social-card {
+      border-radius: 16px; padding: 1.5rem;
+      display: flex; align-items: center; gap: 1rem; cursor: pointer;
+      transition: all 0.3s; border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+    }
+    .social-card:hover { transform: translateY(-4px); }
+    .social-icon { font-size: 2rem; width: 50px; text-align: center; }
+    .social-info h4 { font-weight: 700; font-size: 0.95rem; }
+    .social-info p { font-size: 0.78rem; color: rgba(255,255,255,0.55); margin-top: 0.2rem; }
+    .sc-followers { font-family: 'Barlow Condensed', sans-serif; font-size: 1.5rem; font-weight: 900; color: #fff; }
+
+    /* ── Sponsor Strip ── */
+    .sponsor-section {
+      padding: 3rem 2rem;
+      background: rgba(255,255,255,0.02);
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    .sponsor-title { text-align: center; font-size: 0.72rem; letter-spacing: 2px; color: rgba(255,255,255,0.3); text-transform: uppercase; margin-bottom: 1.5rem; }
+    .sponsor-logos {
+      display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 2.5rem;
+    }
+    .sponsor-logo {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.3rem; font-weight: 900; letter-spacing: 2px;
+      color: rgba(255,255,255,0.25); transition: color 0.3s; cursor: pointer;
+      text-transform: uppercase;
+    }
+    .sponsor-logo:hover { color: rgba(255,255,255,0.6); }
+
+    /* ── Newsletter ── */
+    .newsletter-section {
+      padding: 5rem 2rem;
+      background: linear-gradient(135deg, rgba(232,25,44,0.1), rgba(26,46,90,0.3));
+      border-top: 1px solid rgba(232,25,44,0.15);
+    }
+    .newsletter-inner { max-width: 600px; margin: 0 auto; text-align: center; }
+    .newsletter-inner h2 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 900; margin-bottom: 0.5rem;
+    }
+    .newsletter-inner p { color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-bottom: 2rem; }
+    .newsletter-form { display: flex; gap: 0.75rem; max-width: 480px; margin: 0 auto; }
+    .newsletter-form input {
+      flex: 1; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+      color: #fff; padding: 0.85rem 1.25rem; border-radius: 12px; font-size: 0.9rem;
+      outline: none; transition: border-color 0.2s;
+    }
+    .newsletter-form input::placeholder { color: rgba(255,255,255,0.4); }
+    .newsletter-form input:focus { border-color: rgba(232,25,44,0.5); }
+
+    /* ── Footer ── */
+    footer {
+      background: rgba(6,12,24,0.98); border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 3.5rem 2rem 1.5rem;
+    }
+    .footer-grid {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2.5rem;
+    }
+    .footer-brand { }
+    .footer-brand .fb-logo { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+    .footer-brand .fb-logo img { height: 44px; }
+    .footer-brand .fb-logo span { font-family: 'Barlow Condensed', sans-serif; font-size: 1.2rem; font-weight: 800; }
+    .footer-brand p { font-size: 0.83rem; color: rgba(255,255,255,0.45); line-height: 1.6; max-width: 260px; }
+    .footer-social { display: flex; gap: 0.5rem; margin-top: 1.25rem; }
+    .fs-icon {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,0.6); font-size: 0.85rem; cursor: pointer; transition: all 0.2s;
+    }
+    .fs-icon:hover { background: var(--mlc-red); border-color: var(--mlc-red); color: #fff; }
+    .footer-col h4 {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 0.9rem; font-weight: 800;
+      letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.9);
+      margin-bottom: 1rem;
+    }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 0.6rem; }
+    .footer-col ul li a {
+      font-size: 0.83rem; color: rgba(255,255,255,0.45); text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-col ul li a:hover { color: #fff; }
+    .footer-bottom {
+      max-width: 1200px; margin: 2.5rem auto 0;
+      padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: gap;
+      font-size: 0.75rem; color: rgba(255,255,255,0.3);
+    }
+
+    /* ── Modals ── */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
+      display: none; align-items: center; justify-content: center; padding: 1rem;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-box {
+      background: #0f1e38; border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px; padding: 2.5rem; max-width: 500px; width: 100%;
+      position: relative; animation: modalIn 0.3s ease;
+    }
+    .modal-close {
+      position: absolute; top: 1rem; right: 1rem;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(255,255,255,0.08); border: none; color: #fff;
+      cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+    }
+    .modal-close:hover { background: var(--mlc-red); }
+
+    /* ── Toast ── */
+    .toast-container { position: fixed; bottom: 2rem; right: 2rem; z-index: 99999; display: flex; flex-direction: column; gap: 0.75rem; }
+    .toast {
+      background: rgba(15,30,56,0.98); border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px; padding: 1rem 1.25rem;
+      display: flex; align-items: center; gap: 0.75rem;
+      min-width: 280px; max-width: 380px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      animation: toastIn 0.4s ease;
+    }
+    .toast-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .toast-body .tb-title { font-weight: 700; font-size: 0.88rem; }
+    .toast-body .tb-msg { font-size: 0.78rem; color: rgba(255,255,255,0.55); margin-top: 0.15rem; }
+
+    /* ── Animations ── */
+    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes heroLogoFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+    @keyframes shimmer { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+    @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+    @keyframes bounce { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(8px); } }
+    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+    @keyframes modalIn { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
+    @keyframes toastIn { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(232,25,44,0.4); } 70% { box-shadow: 0 0 0 10px rgba(232,25,44,0); } 100% { box-shadow: 0 0 0 0 rgba(232,25,44,0); } }
+
+    /* ── Responsive ── */
+    @media (max-width: 1024px) {
+      .nav-grid { grid-template-columns: repeat(3, 1fr); }
+      .nav-card.featured { grid-column: span 1; aspect-ratio: 1; }
+      .news-grid { grid-template-columns: 1fr 1fr; }
+      .news-card.featured { grid-column: span 2; }
+      .leaders-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .social-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .nav-grid { grid-template-columns: repeat(2, 1fr); }
+      .news-grid { grid-template-columns: 1fr; }
+      .news-card.featured { grid-column: span 1; }
+      .footer-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+      .social-grid { grid-template-columns: 1fr; }
+      .newsletter-form { flex-direction: column; }
+      .match-card { flex-direction: column; text-align: center; }
+      .match-info { text-align: center; }
+      .nav-links.mobile-open {
+        display: flex; flex-direction: column;
+        position: fixed; top: 70px; left: 0; right: 0;
+        background: rgba(10,22,40,0.98);
+        padding: 1.5rem; gap: 0.5rem; border-bottom: 1px solid rgba(232,25,44,0.2);
+        z-index: 999;
+      }
+    }
+    @media (max-width: 480px) {
+      .nav-grid { grid-template-columns: repeat(2, 1fr); }
+      .hero-stats { gap: 1rem; }
+      .countdown-boxes { gap: 1rem; }
+      .cd-box { padding: 1rem 1.25rem; min-width: 80px; }
+      .cd-num { font-size: 2.5rem; }
+    }
+
+    /* ── Reveal animations ── */
+    .reveal { opacity: 0; transform: translateY(30px); transition: all 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── Live badge pulse ── */
+    .live-badge {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      background: var(--mlc-red); color: #fff;
+      padding: 0.15rem 0.5rem; border-radius: 4px;
+      font-size: 0.65rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
+      animation: pulse-ring 1.5s infinite;
+    }
+    .live-badge .dot { width: 5px; height: 5px; background: #fff; border-radius: 50%; animation: blink 1s infinite; }
+
+    /* ── Tab System ── */
+    .tab-bar { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
+    .tab-btn {
+      padding: 0.5rem 1.2rem; border-radius: 8px; font-size: 0.82rem; font-weight: 600;
+      border: 1px solid rgba(255,255,255,0.1); background: transparent; color: rgba(255,255,255,0.5);
+      cursor: pointer; transition: all 0.2s;
+    }
+    .tab-btn.active { background: var(--mlc-red); border-color: var(--mlc-red); color: #fff; }
+
+    /* ── Points Table ── */
+    .points-table {
+      max-width: 1100px; margin: 0 auto;
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px; overflow: hidden;
+    }
+    .pt-header {
+      display: grid; grid-template-columns: 40px 1fr repeat(5, 60px);
+      gap: 0; padding: 0.75rem 1.5rem;
+      background: rgba(232,25,44,0.15); font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.7);
+    }
+    .pt-row {
+      display: grid; grid-template-columns: 40px 1fr repeat(5, 60px);
+      padding: 0.9rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.04);
+      align-items: center; font-size: 0.85rem; transition: background 0.2s;
+    }
+    .pt-row:hover { background: rgba(255,255,255,0.03); }
+    .pt-row .pos { color: rgba(255,255,255,0.5); font-size: 0.8rem; }
+    .pt-row .team-n { font-weight: 600; display: flex; align-items: center; gap: 0.5rem; }
+    .pt-row .pts { font-family: 'Barlow Condensed', sans-serif; font-size: 1.2rem; font-weight: 900; color: var(--mlc-accent); text-align: center; }
+    .pt-row .val { text-align: center; color: rgba(255,255,255,0.7); }
+    .qual-bar { width: 4px; height: 32px; background: var(--mlc-red); border-radius: 2px; position: absolute; left: 0; }
+    .qualified { position: relative; }
+  </style>
 </head>
 <body>
 
-    <!-- Top Navigation -->
-    <header class="fixed w-full z-50 px-6 py-4 flex justify-between items-center">
-        <div class="flex items-center space-x-2">
-            <!-- Simulated Logo -->
-            <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center p-1 overflow-hidden">
-                <img src="MLC Logo.png" alt="MLC" onerror="this.src='https://upload.wikimedia.org/wikipedia/en/b/ba/Major_League_Cricket_logo.svg'" class="w-full h-auto">
-            </div>
-            <span class="orbitron text-2xl font-bold tracking-tighter">MLC</span>
+<!-- Particles Canvas -->
+<canvas id="particles"></canvas>
+
+<!-- ═══════════════════════════════ NAVBAR ═══════════════════════════════ -->
+<nav class="navbar" id="navbar">
+  <div class="nav-logo" onclick="scrollToTop()">
+    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/3/35/Major_League_Cricket_logo.svg/1200px-Major_League_Cricket_logo.svg.png"
+         onerror="this.style.display='none'; document.getElementById('navLogoText').style.display='flex';"
+         alt="MLC Logo" id="navLogoImg"/>
+    <div id="navLogoText" style="display:none; align-items:center; justify-content:center; width:44px; height:44px;">
+      <svg viewBox="0 0 100 120" width="44" height="44" xmlns="http://www.w3.org/2000/svg">
+        <text x="5" y="40" font-family="Arial Black" font-size="28" fill="#1a2e5a" font-weight="900">MAJOR</text>
+        <text x="5" y="68" font-family="Arial Black" font-size="28" fill="#1a2e5a" font-weight="900">LEAGUE</text>
+        <rect x="5" y="75" width="18" height="40" fill="#e8192c"/>
+        <rect x="27" y="75" width="8" height="40" fill="white"/>
+        <rect x="39" y="75" width="18" height="40" fill="#e8192c"/>
+        <rect x="61" y="75" width="8" height="40" fill="white"/>
+        <text x="65" y="112" font-family="Arial Black" font-size="36" fill="#1a2e5a" font-weight="900">LC</text>
+      </svg>
+    </div>
+    <span>MLC</span>
+  </div>
+  <div class="nav-links" id="navLinks">
+    <a href="#" class="active">Home</a>
+    <a href="#teams-section">Teams</a>
+    <a href="#matches-section">Schedule</a>
+    <a href="#leaders-section">Stats</a>
+    <a href="#news-section">News</a>
+    <a href="#fan-section">Fan Zone</a>
+    <a href="#" class="nav-cta" onclick="openTicketModal()">Buy Tickets</a>
+  </div>
+  <div class="hamburger" id="hamburger" onclick="toggleMobileNav()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════ HERO ═══════════════════════════════ -->
+<section class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="dot"></span>
+      Season 2025 · Now Live
+    </div>
+    <img class="hero-logo"
+         src="https://upload.wikimedia.org/wikipedia/en/thumb/3/35/Major_League_Cricket_logo.svg/1200px-Major_League_Cricket_logo.svg.png"
+         onerror="this.src=''; this.style.display='none';"
+         alt="MLC Logo"/>
+    <h1 class="hero-title">
+      <span class="line1">America's</span>
+      <span class="line2">Cricket</span>
+      <span class="line3">Revolution</span>
+    </h1>
+    <p class="hero-sub">
+      Major League Cricket — the premier Twenty20 cricket league in the United States.
+      World-class talent. Heart-pounding action. Unforgettable moments.
+    </p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="scrollToSection('nav-grid-section')">
+        <i class="fas fa-th-large"></i> Explore MLC
+      </button>
+      <button class="btn-secondary" onclick="openTicketModal()">
+        <i class="fas fa-ticket-alt"></i> Get Tickets
+      </button>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="num">6<span>+</span></div>
+        <div class="lbl">Franchises</div>
+      </div>
+      <div class="hero-divider"></div>
+      <div class="hero-stat">
+        <div class="num">100<span>+</span></div>
+        <div class="lbl">World-Class Players</div>
+      </div>
+      <div class="hero-divider"></div>
+      <div class="hero-stat">
+        <div class="num">30<span>+</span></div>
+        <div class="lbl">Matches Per Season</div>
+      </div>
+      <div class="hero-divider"></div>
+      <div class="hero-stat">
+        <div class="num">3<span>rd</span></div>
+        <div class="lbl">Season 2025</div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <span>Scroll</span>
+    <i class="fas fa-chevron-down"></i>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ LIVE TICKER ═══════════════════════════════ -->
+<div class="ticker-bar">
+  <div class="ticker-inner">
+    <span class="ticker-label">🔴 LIVE</span>
+    <div class="ticker-track" id="tickerTrack"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ INFO CARDS ═══════════════════════════════ -->
+<section class="info-section reveal" id="info-section">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="section-header">
+      <div class="section-tag">About the League</div>
+      <h2 class="section-title">What is <span>Major League Cricket?</span></h2>
+      <p class="section-sub">The fastest-growing cricket league in North America — bringing T20 cricket to millions.</p>
+    </div>
+    <div class="info-cards">
+      <div class="info-card">
+        <div class="info-card-icon" style="background:rgba(232,25,44,0.15);">🏆</div>
+        <h3>Founded in 2023</h3>
+        <p>MLC launched its inaugural season in 2023, making history as the first professional Twenty20 cricket league in the United States, backed by top investors and cricket boards worldwide.</p>
+        <a href="#" class="card-link">Learn More <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon" style="background:rgba(0,194,255,0.15);">🌍</div>
+        <h3>Global Star Power</h3>
+        <p>MLC features world-class cricketers from India, Australia, England, West Indies, and beyond. Top ICC-ranked players compete alongside rising American talent.</p>
+        <a href="#" class="card-link">Meet Players <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon" style="background:rgba(0,200,100,0.15);">🏟️</div>
+        <h3>Iconic Venues</h3>
+        <p>Matches held at Grand Prairie Stadium (Dallas), Church Street Park (Morrisville), and Ground B (Dallas) — purpose-built and upgraded for elite cricket in America.</p>
+        <a href="#" class="card-link">View Venues <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon" style="background:rgba(245,197,24,0.15);">📺</div>
+        <h3>Broadcast Everywhere</h3>
+        <p>Watch MLC live on Willow TV, ESPN+, and streaming platforms worldwide. Every match, every boundary, every wicket — don't miss a single ball.</p>
+        <a href="#" class="card-link">Watch Now <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon" style="background:rgba(150,0,200,0.15);">🎟️</div>
+        <h3>Fan Experience</h3>
+        <p>From stadium experiences to digital fan zones, MLC puts fans at the heart of everything. Exclusive meet-and-greets, merchandise, and interactive game-day events.</p>
+        <a href="#" class="card-link">Fan Zone <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon" style="background:rgba(232,25,44,0.15);">🇺🇸</div>
+        <h3>Growing the Game</h3>
+        <p>MLC's grassroots initiative aims to develop cricket at youth levels across the US, with partnerships with USA Cricket and ICC to build the next generation of American cricketers.</p>
+        <a href="#" class="card-link">Development <i class="fas fa-arrow-right"></i></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ NAVIGATION GRID ═══════════════════════════════ -->
+<section class="nav-grid-section reveal" id="nav-grid-section">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="section-header">
+      <div class="section-tag">Quick Navigation</div>
+      <h2 class="section-title">Explore <span>MLC World</span></h2>
+      <p class="section-sub">Everything you need — one click away.</p>
+    </div>
+    <div class="nav-grid">
+      <!-- Featured: Schedule -->
+      <a href="#matches-section" class="nav-card featured nc-1" onclick="showToast('schedule','Opening Match Schedule...','fas fa-calendar-alt')">
+        <div class="nc-icon">📅</div>
+        <div class="nc-title">Match Schedule</div>
+        <div class="nc-sub">View all upcoming fixtures</div>
+        <div class="nc-arrow"><i class="fas fa-arrow-right"></i></div>
+      </a>
+      <!-- Featured: Teams -->
+      <a href="teams.html" class="nav-card featured nc-2" onclick="showToast('teams','Exploring Teams...','fas fa-shield-alt')">
+        <div class="nc-icon">🛡️</div>
+        <div class="nc-title">Teams</div>
+        <div class="nc-sub">All 6 MLC franchises</div>
+        <div class="nc-arrow"><i class="fas fa-arrow-right"></i></div>
+      </a>
+      <!-- Players -->
+      <a href="players.html" class="nav-card nc-3" onclick="showToast('players','Loading Players...','fas fa-user-friends')">
+        <div class="nc-icon">🏏</div>
+        <div class="nc-title">Players</div>
+        <div class="nc-sub">Rosters & profiles</div>
+        <div class="nc-arrow"><i class="fas fa-arrow-right"></i></div>
+      </a>
+      <!-- Stats -->
+      <a href="#leaders-section" class="nav-card nc-4" onclick="showToast('stats','Loading Stats...','fas fa-chart-bar')">
+        <div class="nc-icon">📊</div>
+        <div class="nc-title">Statistics</div>
+        <div class="nc-sub">Runs, wickets & rankings</div>
+        <div class="nc-arrow"><i class="fas fa-arrow-right"></i></div>
+      </a>
+      <!-- News -->
+      <a href="#news-section" class="nav-card nc-5" onclick="showToast('news','Loading News...','fas fa-newspaper')">
+        <div class="nc-icon">📰</div>
+        <div class="nc-title">News & Media</div>
+        <div class="nc-sub">Latest stories & videos</div>
+        <div class="nc-arrow"><i class="fas fa-arrow-right"></i></div>
+      </a>
+      <!-- Tickets -->
+      <a href="#" class="nav-card nc-6" onclick="openTicketModal(); return false;">
+        <div class="nc-icon">🎟️</div>
+        <div class="nc-title">Buy Tickets</div>
+        <div class="nc-sub">Book your seats now</div>
+        <div class="nc-arrow"><i class="fas fa-arrow-right"></i></div>
+      </a>
+      <!-- Fan Zone -->
+      <a href="#fan-section" class="nav-card nc-7" onclick="showToast('fanzone','Welcome to Fan Zone!','fas fa-star')">
+        <div class="nc-icon">⭐</div>
+        <div class="nc-title">Fan Zone</div>
+        <div class="nc-sub">Community & contests</div>
+        <div class="nc-arrow"><i class="fas fa-arrow-right"></i></div>
+      </a>
+      <!-- Shop -->
+      <a href="#" class="nav-card nc-8" onclick="showToast('shop','Opening MLC Shop...','fas fa-shopping-bag'); return false;">
+        <div class="nc-icon">🛍️</div>
+        <div class="nc-title">MLC Shop</div>
+        <div class="nc-sub">Official merchandise</div>
+        <div class="nc-arrow"><i class="fas fa-arrow-right"></i></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ COUNTDOWN ═══════════════════════════════ -->
+<section class="countdown-section reveal">
+  <div class="countdown-wrap">
+    <div class="countdown-title">Next Major Event</div>
+    <div class="countdown-event">MLC <span>2025 Finals</span> Countdown</div>
+    <div class="countdown-boxes">
+      <div class="cd-box"><div class="cd-num" id="cd-days">00</div><div class="cd-lbl">Days</div></div>
+      <div class="cd-box"><div class="cd-num" id="cd-hours">00</div><div class="cd-lbl">Hours</div></div>
+      <div class="cd-box"><div class="cd-num" id="cd-mins">00</div><div class="cd-lbl">Minutes</div></div>
+      <div class="cd-box"><div class="cd-num" id="cd-secs">00</div><div class="cd-lbl">Seconds</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ TEAMS ═══════════════════════════════ -->
+<section class="teams-section reveal" id="teams-section">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="section-header">
+      <div class="section-tag">Franchises</div>
+      <h2 class="section-title">The <span>6 Teams</span> of MLC</h2>
+      <p class="section-sub">Six powerhouse franchises battling for the MLC Cup.</p>
+    </div>
+    <div class="teams-strip" id="teamsStrip"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ POINTS TABLE ═══════════════════════════════ -->
+<section style="padding:3rem 2rem 5rem; background:rgba(10,22,40,0.95);" class="reveal">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="section-header">
+      <div class="section-tag">Standings</div>
+      <h2 class="section-title">Points <span>Table</span></h2>
+    </div>
+    <div class="points-table">
+      <div class="pt-header">
+        <div>#</div><div>Team</div>
+        <div style="text-align:center">M</div>
+        <div style="text-align:center">W</div>
+        <div style="text-align:center">L</div>
+        <div style="text-align:center">NRR</div>
+        <div style="text-align:center">PTS</div>
+      </div>
+      <div id="pointsTable"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ MATCHES ═══════════════════════════════ -->
+<section class="matches-section reveal" id="matches-section">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="section-header">
+      <div class="section-tag">Fixtures</div>
+      <h2 class="section-title">Match <span>Schedule</span></h2>
+    </div>
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab('upcoming',this)">Upcoming</button>
+      <button class="tab-btn" onclick="switchTab('results',this)">Results</button>
+      <button class="tab-btn" onclick="switchTab('live',this)">Live</button>
+    </div>
+    <div class="matches-grid" id="matchesGrid"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ LEADERBOARD ═══════════════════════════════ -->
+<section class="leaders-section reveal" id="leaders-section">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="section-header">
+      <div class="section-tag">Statistics</div>
+      <h2 class="section-title">Season <span>Leaders</span></h2>
+    </div>
+    <div class="leaders-grid">
+      <div class="leader-table">
+        <div class="lt-header">
+          <i class="fas fa-bat" style="color:var(--mlc-gold)"></i>
+          <h3>Top Run Scorers</h3>
         </div>
-        
-        <nav class="hidden md:flex space-x-8 text-sm font-semibold uppercase tracking-widest">
-            <a href="#" class="hover:text-cyan-400 transition">Tickets</a>
-            <a href="#" class="hover:text-cyan-400 transition">Schedule</a>
-            <a href="#" class="hover:text-cyan-400 transition">Fantasy</a>
-            <a href="#" class="hover:text-cyan-400 transition">Store</a>
-        </nav>
-
-        <div class="flex items-center space-x-4">
-            <button class="text-white hover:text-cyan-400"><i class="fa-solid fa-magnifying-glass"></i></button>
-            <button class="btn-primary px-6 py-2 rounded-full text-sm font-bold uppercase">Sign In</button>
+        <div id="runScorers"></div>
+      </div>
+      <div class="leader-table">
+        <div class="lt-header">
+          <i class="fas fa-wind" style="color:var(--mlc-accent)"></i>
+          <h3>Top Wicket Takers</h3>
         </div>
-    </header>
+        <div id="wicketTakers"></div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <!-- Hero Section -->
-    <section class="relative h-screen flex flex-col items-center justify-center text-center px-4 hero-gradient">
-        <div class="z-10 animate-fade-up">
-            <h2 class="text-cyan-400 orbitron text-xl mb-4 tracking-widest uppercase">The Future of Cricket is Here</h2>
-            <h1 class="text-5xl md:text-8xl font-black mb-6 leading-tight">AMERICA'S <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-cyan-400">PRO LEAGUE</span></h1>
-            <p class="max-w-2xl mx-auto text-gray-400 mb-8 text-lg">Experience world-class T20 cricket featuring global superstars and domestic icons. 6 Teams. 1 Championship.</p>
-            
-            <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 justify-center">
-                <button class="btn-primary px-10 py-4 rounded-lg font-bold text-lg flex items-center justify-center">
-                    <i class="fa-solid fa-ticket mr-2"></i> GET TICKETS
-                </button>
-                <button class="border border-white/30 hover:bg-white/10 px-10 py-4 rounded-lg font-bold text-lg transition">
-                    WATCH HIGHLIGHTS
-                </button>
-            </div>
+<!-- ═══════════════════════════════ NEWS ═══════════════════════════════ -->
+<section class="news-section reveal" id="news-section">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="section-header">
+      <div class="section-tag">Latest</div>
+      <h2 class="section-title">News & <span>Media</span></h2>
+    </div>
+    <div class="news-grid" id="newsGrid"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ FAN ZONE / SOCIAL ═══════════════════════════════ -->
+<section class="fan-section reveal" id="fan-section">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="section-header">
+      <div class="section-tag">Community</div>
+      <h2 class="section-title">Fan <span>Zone</span></h2>
+      <p class="section-sub">Join the fastest-growing cricket community in America.</p>
+    </div>
+    <div class="social-grid">
+      <div class="social-card" style="border-color:rgba(29,161,242,0.3);" onclick="showToast('twitter','Follow us on X!','fab fa-twitter')">
+        <div class="social-icon">𝕏</div>
+        <div class="social-info">
+          <div class="sc-followers">248K</div>
+          <h4>Follow on X</h4>
+          <p>Live updates, match commentary & more</p>
         </div>
-
-        <!-- Scroll Indicator -->
-        <div class="absolute bottom-10 animate-bounce">
-            <i class="fa-solid fa-chevron-down text-2xl text-gray-500"></i>
+      </div>
+      <div class="social-card" style="border-color:rgba(225,48,108,0.3);" onclick="showToast('instagram','Follow us on Instagram!','fab fa-instagram')">
+        <div class="social-icon">📸</div>
+        <div class="social-info">
+          <div class="sc-followers">380K</div>
+          <h4>Instagram</h4>
+          <p>Behind-the-scenes & highlights</p>
         </div>
-    </section>
-
-    <!-- Grid Navigation Panel -->
-    <section class="py-20 px-6 max-w-7xl mx-auto -mt-20 z-20 relative">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            <div class="nav-card p-8 rounded-2xl text-center" onclick="window.location.href='/mlc/players'">
-                <i class="fa-solid fa-users-gear"></i>
-                <h3 class="orbitron text-lg font-bold">PLAYERS</h3>
-                <p class="text-xs text-gray-400 mt-2">Stats, bios & draft picks</p>
-            </div>
-            <div class="nav-card p-8 rounded-2xl text-center" onclick="window.location.href='/mlc/teams'">
-                <i class="fa-solid fa-shield-halved"></i>
-                <h3 class="orbitron text-lg font-bold">TEAMS</h3>
-                <p class="text-xs text-gray-400 mt-2">Your favorite franchises</p>
-            </div>
-            <div class="nav-card p-8 rounded-2xl text-center" onclick="window.location.href='#fixtures'">
-                <i class="fa-solid fa-calendar-days"></i>
-                <h3 class="orbitron text-lg font-bold">FIXTURES</h3>
-                <p class="text-xs text-gray-400 mt-2">Match centers & results</p>
-            </div>
-            <div class="nav-card p-8 rounded-2xl text-center" onclick="window.location.href='#venues'">
-                <i class="fa-solid fa-map-location-dot"></i>
-                <h3 class="orbitron text-lg font-bold">VENUES</h3>
-                <p class="text-xs text-gray-400 mt-2">Grand Prairie & beyond</p>
-            </div>
+      </div>
+      <div class="social-card" style="border-color:rgba(255,0,0,0.3);" onclick="showToast('youtube','Subscribe on YouTube!','fab fa-youtube')">
+        <div class="social-icon">▶️</div>
+        <div class="social-info">
+          <div class="sc-followers">520K</div>
+          <h4>YouTube</h4>
+          <p>Full match replays & analysis</p>
         </div>
-    </section>
+      </div>
+    </div>
 
-    <!-- Live Ticker / News -->
-    <section class="py-12 bg-white/5 border-y border-white/10">
-        <div class="flex items-center overflow-hidden whitespace-nowrap">
-            <div class="bg-red-600 px-6 py-2 orbitron font-bold italic skew-x-[-20deg] z-10 -ml-4">LATEST NEWS</div>
-            <div class="animate-marquee flex space-x-12 ml-8 text-sm font-medium text-gray-300">
-                <span>MI NEW YORK CROWNED 2025 CHAMPIONS! 🏆</span>
-                <span>Faf du Plessis leads run-scoring charts with 900+ runs 🏏</span>
-                <span>MLC 2026 Season Schedule to be announced soon...</span>
-                <span>New Stadium in Los Angeles entering Phase 2 of construction 🏟️</span>
-                <span>International Draft registrations now open for 2026.</span>
-            </div>
+    <!-- Poll -->
+    <div style="margin-top:2.5rem; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:2rem;">
+      <h3 style="font-family:'Barlow Condensed',sans-serif; font-size:1.3rem; font-weight:800; margin-bottom:0.25rem;">🗳️ Fan Poll</h3>
+      <p style="font-size:0.85rem; color:rgba(255,255,255,0.55); margin-bottom:1.25rem;">Who will win the MLC 2025 Title?</p>
+      <div id="pollOptions" style="display:flex; flex-direction:column; gap:0.75rem;"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ SPONSORS ═══════════════════════════════ -->
+<section class="sponsor-section reveal">
+  <div class="sponsor-title">Official Partners & Sponsors</div>
+  <div class="sponsor-logos">
+    <div class="sponsor-logo">Emirates</div>
+    <div class="sponsor-logo">Microsoft</div>
+    <div class="sponsor-logo">Muthoot</div>
+    <div class="sponsor-logo">Fanatics</div>
+    <div class="sponsor-logo">Willow TV</div>
+    <div class="sponsor-logo">ESPN+</div>
+    <div class="sponsor-logo">DraftKings</div>
+    <div class="sponsor-logo">Puma</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ NEWSLETTER ═══════════════════════════════ -->
+<section class="newsletter-section reveal">
+  <div class="newsletter-inner">
+    <div class="section-tag" style="margin-bottom:0.8rem;">Stay Updated</div>
+    <h2>Never Miss a <span style="color:var(--mlc-red)">Boundary</span></h2>
+    <p>Subscribe to MLC newsletter for match alerts, exclusive content, and early ticket access.</p>
+    <div class="newsletter-form">
+      <input type="email" id="emailInput" placeholder="Enter your email address"/>
+      <button class="btn-primary" onclick="subscribeNewsletter()">
+        Subscribe <i class="fas fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="fb-logo">
+        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/3/35/Major_League_Cricket_logo.svg/1200px-Major_League_Cricket_logo.svg.png"
+             style="height:44px;"
+             onerror="this.style.display='none';" alt="MLC"/>
+        <span>Major League Cricket</span>
+      </div>
+      <p>America's premier Twenty20 cricket league, uniting the world's best cricketers and fans across the United States.</p>
+      <div class="footer-social">
+        <div class="fs-icon" onclick="showToast('twitter','Opening X...','fab fa-twitter')"><i class="fab fa-twitter"></i></div>
+        <div class="fs-icon" onclick="showToast('instagram','Opening Instagram...','fab fa-instagram')"><i class="fab fa-instagram"></i></div>
+        <div class="fs-icon" onclick="showToast('facebook','Opening Facebook...','fab fa-facebook-f')"><i class="fab fa-facebook-f"></i></div>
+        <div class="fs-icon" onclick="showToast('youtube','Opening YouTube...','fab fa-youtube')"><i class="fab fa-youtube"></i></div>
+        <div class="fs-icon" onclick="showToast('tiktok','Opening TikTok...','fab fa-tiktok')"><i class="fab fa-tiktok"></i></div>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="teams">Teams</a></li>
+        <li><a href="#matches-section">Schedule</a></li>
+        <li><a href="#leaders-section">Statistics</a></li>
+        <li><a href="#news-section">News</a></li>
+        <li><a href="#fan-section">Fan Zone</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>League</h4>
+      <ul>
+        <li><a href="#">About MLC</a></li>
+        <li><a href="#">Governance</a></li>
+        <li><a href="#">USA Cricket</a></li>
+        <li><a href="#">ICC Partnership</a></li>
+        <li><a href="#">Draft & Auction</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <ul>
+        <li><a href="#">Contact Us</a></li>
+        <li><a href="#">Tickets FAQ</a></li>
+        <li><a href="#">Media Accreditation</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Major League Cricket. All rights reserved.</span>
+    <span>Built with ❤️ for Cricket in America 🇺🇸</span>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════ TICKET MODAL ═══════════════════════════════ -->
+<div class="modal-overlay" id="ticketModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeTicketModal()"><i class="fas fa-times"></i></button>
+    <div style="text-align:center; margin-bottom:1.5rem;">
+      <div style="font-size:2.5rem; margin-bottom:0.5rem;">🎟️</div>
+      <h2 style="font-family:'Barlow Condensed',sans-serif; font-size:1.8rem; font-weight:900;">Buy MLC Tickets</h2>
+      <p style="font-size:0.85rem; color:rgba(255,255,255,0.55); margin-top:0.3rem;">Select a match and book your seats</p>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:0.75rem;" id="ticketMatches"></div>
+    <button class="btn-primary" style="width:100%; justify-content:center; margin-top:1.5rem;" onclick="showToast('ticket','Redirecting to ticket portal...','fas fa-ticket-alt'); closeTicketModal();">
+      <i class="fas fa-external-link-alt"></i> Continue to Ticketmaster
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ TOAST CONTAINER ═══════════════════════════════ -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// ═══════════════════════════════ DATA ═══════════════════════════════
+const TEAMS = [
+  { name: 'MI New York', short: 'MINY', city: 'New York', emoji: '🔵', color: '#005DA0', wins: '2025 Champions', accent: '#A0C4FF' },
+  { name: 'Texas Super Kings', short: 'TSK', city: 'Dallas', emoji: '🟡', color: '#FFCA28', wins: 'Runner-Up 2024', accent: '#FFF59D' },
+  { name: 'San Francisco Unicorns', short: 'SFU', city: 'San Francisco', emoji: '🦄', color: '#E040FB', wins: '3rd Place 2024', accent: '#F3B3FF' },
+  { name: 'Washington Freedom', short: 'WF', city: 'Washington DC', emoji: '🦅', color: '#EF5350', wins: 'Finalist 2023', accent: '#FFCDD2' },
+  { name: 'LA Knight Riders', short: 'LAKR', city: 'Los Angeles', emoji: '🟣', color: '#7B1FA2', wins: 'Semi-Final 2024', accent: '#E1BEE7' },
+  { name: 'Seattle Orcas', short: 'SO', city: 'Seattle', emoji: '🐋', color: '#00897B', wins: 'Debut 2024', accent: '#B2DFDB' }
+];
+
+const MATCHES = {
+  upcoming: [
+    { date: '18', mon: 'Jul', t1: 'MI New York', t2: 'Texas Super Kings', venue: 'Grand Prairie Stadium', status: 'upcoming', t1s:'MINY', t2s:'TSK' },
+    { date: '20', mon: 'Jul', t1: 'San Francisco Unicorns', t2: 'Washington Freedom', venue: 'Church Street Park', status: 'upcoming', t1s:'SFU', t2s:'WF' },
+    { date: '22', mon: 'Jul', t1: 'LA Knight Riders', t2: 'Seattle Orcas', venue: 'Dodger Stadium Ground', status: 'upcoming', t1s:'LAKR', t2s:'SO' },
+    { date: '25', mon: 'Jul', t1: 'Texas Super Kings', t2: 'Washington Freedom', venue: 'Grand Prairie Stadium', status: 'upcoming', t1s:'TSK', t2s:'WF' },
+  ],
+  results: [
+    { date: '14', mon: 'Jul', t1: 'MI New York', t2: 'LA Knight Riders', venue: 'Grand Prairie Stadium', status: 'result', result: 'MINY won by 34 runs', t1s:'MINY', t2s:'LAKR' },
+    { date: '12', mon: 'Jul', t1: 'Texas Super Kings', t2: 'Seattle Orcas', venue: 'Church Street Park', status: 'result', result: 'TSK won by 6 wickets', t1s:'TSK', t2s:'SO' },
+    { date: '10', mon: 'Jul', t1: 'Washington Freedom', t2: 'SF Unicorns', venue: 'Grand Prairie Stadium', status: 'result', result: 'WF won by 12 runs', t1s:'WF', t2s:'SFU' },
+  ],
+  live: [
+    { date: '16', mon: 'Jul', t1: 'MI New York', t2: 'Seattle Orcas', venue: 'Grand Prairie Stadium', status: 'live', score: 'MINY: 142/4 (16.2)', t1s:'MINY', t2s:'SO' },
+  ]
+};
+
+const POINTS = [
+  { pos:1, team:'MI New York', short:'MINY', emoji:'🔵', m:8, w:6, l:2, nrr:'+1.24', pts:12, qualified:true },
+  { pos:2, team:'Texas Super Kings', short:'TSK', emoji:'🟡', m:8, w:5, l:3, nrr:'+0.87', pts:10, qualified:true },
+  { pos:3, team:'Washington Freedom', short:'WF', emoji:'🦅', m:7, w:4, l:3, nrr:'+0.31', pts:8, qualified:false },
+  { pos:4, team:'SF Unicorns', short:'SFU', emoji:'🦄', m:8, w:3, l:5, nrr:'-0.18', pts:6, qualified:false },
+  { pos:5, team:'LA Knight Riders', short:'LAKR', emoji:'🟣', m:7, w:2, l:5, nrr:'-0.65', pts:4, qualified:false },
+  { pos:6, team:'Seattle Orcas', short:'SO', emoji:'🐋', m:8, w:1, l:7, nrr:'-1.43', pts:2, qualified:false },
+];
+
+const RUN_SCORERS = [
+  { name:'Quinton de Kock', team:'MINY', runs:384, avg:'48.0', emoji:'🏏' },
+  { name:'Devon Conway', team:'TSK', runs:351, avg:'43.9', emoji:'🏏' },
+  { name:'Nicholas Pooran', team:'WF', runs:312, avg:'44.6', emoji:'🏏' },
+  { name:'Shai Hope', team:'SFU', runs:298, avg:'37.3', emoji:'🏏' },
+  { name:'Andre Russell', team:'MINY', runs:276, avg:'55.2', emoji:'🏏' },
+];
+
+const WICKET_TAKERS = [
+  { name:'Trent Boult', team:'MINY', wkts:16, eco:'7.2', emoji:'🎯' },
+  { name:'Rashid Khan', team:'TSK', wkts:14, eco:'6.8', emoji:'🎯' },
+  { name:'Lockie Ferguson', team:'SFU', wkts:13, eco:'7.5', emoji:'🎯' },
+  { name:'Kagiso Rabada', team:'WF', wkts:12, eco:'8.1', emoji:'🎯' },
+  { name:'Sam Curran', team:'LAKR', wkts:11, eco:'8.4', emoji:'🎯' },
+];
+
+const NEWS = [
+  { cat: 'MATCH REPORT', title: 'MI New York Dominate LA Knight Riders in Thrilling 34-Run Victory', excerpt: 'Andre Russell\'s explosive 72* off 38 balls led MINY to a commanding total of 198/5, as their bowlers dismantled LAKR\'s batting lineup.', emoji: '🏏', bg: 'linear-gradient(135deg,#1a2e5a,#003080)', date: 'Jul 14', reads: '12.4K', featured: true, catColor: '#00c2ff' },
+  { cat: 'PLAYER NEWS', title: 'Rashid Khan Sets New MLC Wicket Record', excerpt: 'The Afghan spin wizard becomes the first bowler to take 14 wickets in a single MLC season.', emoji: '🌀', bg: 'linear-gradient(135deg,#4a0060,#8b00d4)', date: 'Jul 13', reads: '8.7K', catColor: '#f3b3ff' },
+  { cat: 'LEAGUE NEWS', title: 'MLC Announces Expansion Plans for 2026 Season', excerpt: 'Two new franchises to join MLC from the 2026 season, expanding the league to 8 teams across America.', emoji: '🚀', bg: 'linear-gradient(135deg,#003300,#006600)', date: 'Jul 12', reads: '15.2K', catColor: '#a5d6a7' },
+  { cat: 'TICKET ALERT', title: 'Finals Tickets On Sale Now — Sell-Out Expected', excerpt: 'MLC Grand Final tickets released. Fans urged to book early as demand hits record highs.', emoji: '🎟️', bg: 'linear-gradient(135deg,#5c0000,#b71c1c)', date: 'Jul 11', reads: '22.1K', catColor: '#ff8a80' },
+];
+
+const POLL_OPTIONS = ['MI New York 🔵','Texas Super Kings 🟡','Washington Freedom 🦅','San Francisco Unicorns 🦄'];
+const POLL_VOTES = [342, 287, 198, 124];
+let pollVoted = false;
+let currentTab = 'upcoming';
+let pollVotedIndex = -1;
+
+const TICKER_ITEMS = [
+  '🔴 LIVE: MINY vs SO · MINY 142/4 (16.2 ov)',
+  '📌 TSK vs WF · Jul 20 · Grand Prairie Stadium',
+  '🏆 Points Leader: MI New York · 12 pts',
+  '⭐ Top Scorer: Q. de Kock · 384 runs',
+  '🎯 Top Wickets: T. Boult · 16 wickets',
+  '📣 MLC Finals · August 18 · Dallas TX',
+  '🎟️ Finals tickets on sale NOW · Get yours before sell-out!',
+  '📺 Watch MLC on ESPN+ & Willow TV',
+];
+
+// ═══════════════════════════════ PARTICLES ═══════════════════════════════
+(function() {
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+  resize(); window.addEventListener('resize', resize);
+  function rand(a, b) { return Math.random() * (b - a) + a; }
+  for (let i = 0; i < 80; i++) {
+    particles.push({
+      x: rand(0, 1), y: rand(0, 1),
+      size: rand(1, 3), speed: rand(0.0002, 0.0006),
+      opacity: rand(0.1, 0.5),
+      color: Math.random() > 0.6 ? '#e8192c' : '#00c2ff'
+    });
+  }
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => {
+      p.y -= p.speed;
+      if (p.y < 0) p.y = 1;
+      ctx.beginPath();
+      ctx.arc(p.x * W, p.y * H, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = p.opacity;
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ═══════════════════════════════ NAVBAR ═══════════════════════════════
+window.addEventListener('scroll', () => {
+  const nb = document.getElementById('navbar');
+  if (window.scrollY > 50) nb.classList.add('scrolled');
+  else nb.classList.remove('scrolled');
+});
+function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function scrollToSection(id) { document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }); }
+function toggleMobileNav() {
+  const nl = document.getElementById('navLinks');
+  nl.classList.toggle('mobile-open');
+}
+
+// ═══════════════════════════════ TICKER ═══════════════════════════════
+(function() {
+  const track = document.getElementById('tickerTrack');
+  const items = [...TICKER_ITEMS, ...TICKER_ITEMS];
+  track.innerHTML = items.map(i =>
+    `<span class="ticker-item"><span>${i}</span><span class="sep">|</span></span>`
+  ).join('');
+})();
+
+// ═══════════════════════════════ COUNTDOWN ═══════════════════════════════
+const FINALS_DATE = new Date('2025-08-18T18:00:00');
+function updateCountdown() {
+  const now = new Date();
+  const diff = FINALS_DATE - now;
+  if (diff <= 0) {
+    ['cd-days','cd-hours','cd-mins','cd-secs'].forEach(id => document.getElementById(id).textContent = '00');
+    return;
+  }
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  document.getElementById('cd-days').textContent = String(d).padStart(2,'0');
+  document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
+  document.getElementById('cd-mins').textContent = String(m).padStart(2,'0');
+  document.getElementById('cd-secs').textContent = String(s).padStart(2,'0');
+}
+updateCountdown(); setInterval(updateCountdown, 1000);
+
+// ═══════════════════════════════ TEAMS ═══════════════════════════════
+(function() {
+  const strip = document.getElementById('teamsStrip');
+  strip.innerHTML = TEAMS.map(t => `
+    <div class="team-card" onclick="showToast('team','Go ${t.name}! 🎉','fas fa-shield-alt')"
+         style="--ta:${t.accent};">
+      <div style="position:absolute;inset:0;border-radius:16px;background:${t.color}22;"></div>
+      <div class="team-logo">${t.emoji}</div>
+      <div class="team-name" style="color:${t.accent}">${t.name}</div>
+      <div class="team-city">${t.city}</div>
+      <div class="team-wins">${t.wins}</div>
+      <div style="position:absolute;bottom:0;left:0;right:0;height:3px;background:${t.color};border-radius:0 0 16px 16px;"></div>
+    </div>
+  `).join('');
+})();
+
+// ═══════════════════════════════ POINTS TABLE ═══════════════════════════════
+(function() {
+  const el = document.getElementById('pointsTable');
+  el.innerHTML = POINTS.map(p => `
+    <div class="pt-row${p.qualified ? ' qualified' : ''}">
+      ${p.qualified ? '<div class="qual-bar"></div>' : ''}
+      <div class="pos">${p.pos}</div>
+      <div class="team-n">${p.emoji} ${p.team}</div>
+      <div class="val">${p.m}</div>
+      <div class="val" style="color:#4caf50">${p.w}</div>
+      <div class="val" style="color:#ef5350">${p.l}</div>
+      <div class="val" style="color:${p.nrr.startsWith('+') ? '#4caf50' : '#ef5350'}">${p.nrr}</div>
+      <div class="pts">${p.pts}</div>
+    </div>
+  `).join('');
+})();
+
+// ═══════════════════════════════ MATCHES ═══════════════════════════════
+function renderMatches(tab) {
+  const grid = document.getElementById('matchesGrid');
+  const data = MATCHES[tab] || [];
+  if (!data.length) {
+    grid.innerHTML = `<div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.4);">No matches in this category right now.</div>`;
+    return;
+  }
+  grid.innerHTML = data.map(m => {
+    const statusEl = m.status === 'live'
+      ? `<span class="live-badge"><span class="dot"></span> LIVE</span>`
+      : m.status === 'upcoming'
+      ? `<span class="match-status status-upcoming">Upcoming</span>`
+      : `<span class="match-status status-result">FT</span>`;
+    const extra = m.result
+      ? `<div style="font-size:0.75rem;color:#4caf50;margin-top:0.4rem;font-weight:600;">${m.result}</div>`
+      : m.score
+      ? `<div style="font-size:0.75rem;color:var(--mlc-gold);margin-top:0.4rem;font-weight:600;">${m.score}</div>`
+      : '';
+    return `
+      <div class="match-card" onclick="showToast('match','Loading match details...','fas fa-cricket')">
+        <div class="match-date-box">
+          <div class="mday">${m.date}</div>
+          <div class="mmon">${m.mon}</div>
         </div>
-    </section>
-
-    <!-- Featured Teams Section -->
-    <section id="teams" class="py-24 px-6 max-w-7xl mx-auto">
-        <div class="text-center mb-16">
-            <h2 class="orbitron text-4xl font-black mb-4">THE FRANCHISES</h2>
-            <div class="w-24 h-1 bg-cyan-400 mx-auto"></div>
+        <div class="match-teams">
+          <div class="match-team">
+            <div class="mt-name">${m.t1}</div>
+            <div class="mt-city">${m.t1s}</div>
+          </div>
+          <div class="match-vs">VS</div>
+          <div class="match-team" style="text-align:right">
+            <div class="mt-name">${m.t2}</div>
+            <div class="mt-city">${m.t2s}</div>
+          </div>
         </div>
-
-        <div class="grid grid-cols-2 md:grid-cols-6 gap-8">
-            <!-- LA Knight Riders -->
-            <div class="flex flex-col items-center">
-                <div class="team-badge w-32 h-32 bg-purple-900/30 rounded-full flex items-center justify-center border border-purple-500/50 mb-4 p-4 shadow-lg">
-                    <img src="https://upload.wikimedia.org/wikipedia/en/4/4c/Los_Angeles_Knight_Riders_Logo.png" alt="LAKR" class="w-full h-auto">
-                </div>
-                <h4 class="orbitron text-sm font-bold text-center">LA <br>KNIGHT RIDERS</h4>
-            </div>
-            <!-- MI New York -->
-            <div class="flex flex-col items-center">
-                <div class="team-badge w-32 h-32 bg-blue-900/30 rounded-full flex items-center justify-center border border-blue-500/50 mb-4 p-4 shadow-lg">
-                    <img src="https://upload.wikimedia.org/wikipedia/en/c/c5/MI_New_York_Logo.png" alt="MINY" class="w-full h-auto">
-                </div>
-                <h4 class="orbitron text-sm font-bold text-center">MI <br>NEW YORK</h4>
-            </div>
-            <!-- San Francisco Unicorns -->
-            <div class="flex flex-col items-center">
-                <div class="team-badge w-32 h-32 bg-cyan-900/30 rounded-full flex items-center justify-center border border-cyan-500/50 mb-4 p-4 shadow-lg">
-                    <img src="https://upload.wikimedia.org/wikipedia/en/9/9f/San_Francisco_Unicorns_Logo.png" alt="SFU" class="w-full h-auto">
-                </div>
-                <h4 class="orbitron text-sm font-bold text-center">SF <br>UNICORNS</h4>
-            </div>
-            <!-- Seattle Orcas -->
-            <div class="flex flex-col items-center">
-                <div class="team-badge w-32 h-32 bg-green-900/30 rounded-full flex items-center justify-center border border-green-500/50 mb-4 p-4 shadow-lg">
-                    <img src="https://upload.wikimedia.org/wikipedia/en/c/c4/Seattle_Orcas_Logo.png" alt="Orcas" class="w-full h-auto">
-                </div>
-                <h4 class="orbitron text-sm font-bold text-center">SEATTLE <br>ORCAS</h4>
-            </div>
-            <!-- Texas Super Kings -->
-            <div class="flex flex-col items-center">
-                <div class="team-badge w-32 h-32 bg-yellow-900/30 rounded-full flex items-center justify-center border border-yellow-500/50 mb-4 p-4 shadow-lg">
-                    <img src="https://upload.wikimedia.org/wikipedia/en/5/52/Texas_Super_Kings_Logo.png" alt="TSK" class="w-full h-auto">
-                </div>
-                <h4 class="orbitron text-sm font-bold text-center">TEXAS <br>SUPER KINGS</h4>
-            </div>
-            <!-- Washington Freedom -->
-            <div class="flex flex-col items-center">
-                <div class="team-badge w-32 h-32 bg-red-900/30 rounded-full flex items-center justify-center border border-red-500/50 mb-4 p-4 shadow-lg">
-                    <img src="https://upload.wikimedia.org/wikipedia/en/e/e9/Washington_Freedom_Logo.png" alt="Freedom" class="w-full h-auto">
-                </div>
-                <h4 class="orbitron text-sm font-bold text-center">WASHINGTON <br>FREEDOM</h4>
-            </div>
+        <div class="match-info">
+          <div class="mi-venue"><i class="fas fa-map-marker-alt" style="margin-right:4px"></i>${m.venue}</div>
+          ${statusEl}
+          ${extra}
         </div>
-    </section>
+      </div>`;
+  }).join('');
+}
+renderMatches('upcoming');
 
-    <!-- Standings Snippet -->
-    <section class="py-24 px-6 bg-gradient-to-b from-transparent to-[#05070a]">
-        <div class="max-w-4xl mx-auto bg-white/5 rounded-3xl p-8 border border-white/10 shadow-2xl">
-            <h3 class="orbitron text-2xl font-bold mb-8 flex items-center">
-                <i class="fa-solid fa-ranking-star text-cyan-400 mr-4"></i> 2025 STANDINGS
-            </h3>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead class="text-gray-500 uppercase text-xs">
-                        <tr>
-                            <th class="pb-4">Pos</th>
-                            <th class="pb-4">Team</th>
-                            <th class="pb-4">Pld</th>
-                            <th class="pb-4">Won</th>
-                            <th class="pb-4">Pts</th>
-                            <th class="pb-4">NRR</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-sm font-semibold">
-                        <tr class="border-t border-white/5">
-                            <td class="py-4">1</td>
-                            <td class="py-4 flex items-center"><span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span> Washington Freedom</td>
-                            <td class="py-4">10</td>
-                            <td class="py-4">8</td>
-                            <td class="py-4 text-cyan-400">16</td>
-                            <td class="py-4">+0.954</td>
-                        </tr>
-                        <tr class="border-t border-white/5">
-                            <td class="py-4">2</td>
-                            <td class="py-4 flex items-center"><span class="w-2 h-2 bg-yellow-500 rounded-full mr-3"></span> Texas Super Kings</td>
-                            <td class="py-4">10</td>
-                            <td class="py-4">7</td>
-                            <td class="py-4 text-cyan-400">14</td>
-                            <td class="py-4">+1.603</td>
-                        </tr>
-                        <tr class="border-t border-white/5">
-                            <td class="py-4">3</td>
-                            <td class="py-4 flex items-center"><span class="w-2 h-2 bg-cyan-500 rounded-full mr-3"></span> SF Unicorns</td>
-                            <td class="py-4">10</td>
-                            <td class="py-4">7</td>
-                            <td class="py-4 text-cyan-400">14</td>
-                            <td class="py-4">+1.330</td>
-                        </tr>
-                        <tr class="border-t border-white/5">
-                            <td class="py-4">4</td>
-                            <td class="py-4 flex items-center font-bold text-white"><span class="w-2 h-2 bg-blue-400 rounded-full mr-3"></span> MI New York (C)</td>
-                            <td class="py-4">10</td>
-                            <td class="py-4">3</td>
-                            <td class="py-4 text-cyan-400">6</td>
-                            <td class="py-4">-0.518</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+function switchTab(tab, btn) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderMatches(tab);
+}
+
+// ═══════════════════════════════ LEADERBOARD ═══════════════════════════════
+(function() {
+  const rankColors = ['gold','silver','bronze'];
+  document.getElementById('runScorers').innerHTML = RUN_SCORERS.map((p, i) => `
+    <div class="lt-row">
+      <div class="lt-rank ${rankColors[i]||''}">${i+1}</div>
+      <div class="lt-avatar" style="background:rgba(0,194,255,0.15);color:var(--mlc-accent)">${p.emoji}</div>
+      <div style="flex:1">
+        <div class="lt-name">${p.name}</div>
+        <div class="lt-team">${p.team} · Avg: ${p.avg}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="lt-value">${p.runs}</div>
+        <div class="lt-unit">RUNS</div>
+      </div>
+    </div>
+  `).join('');
+
+  document.getElementById('wicketTakers').innerHTML = WICKET_TAKERS.map((p, i) => `
+    <div class="lt-row">
+      <div class="lt-rank ${rankColors[i]||''}">${i+1}</div>
+      <div class="lt-avatar" style="background:rgba(232,25,44,0.15);color:#ff6b7a">${p.emoji}</div>
+      <div style="flex:1">
+        <div class="lt-name">${p.name}</div>
+        <div class="lt-team">${p.team} · Eco: ${p.eco}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="lt-value">${p.wkts}</div>
+        <div class="lt-unit">WKTS</div>
+      </div>
+    </div>
+  `).join('');
+})();
+
+// ═══════════════════════════════ NEWS ═══════════════════════════════
+(function() {
+  const grid = document.getElementById('newsGrid');
+  grid.innerHTML = NEWS.map((n, i) => `
+    <div class="news-card${n.featured ? ' featured' : ''}" onclick="showToast('news','Opening article...','fas fa-newspaper')">
+      <div class="news-img" style="background:${n.bg}">${n.emoji}</div>
+      <div class="news-body">
+        <div class="news-cat" style="color:${n.catColor}">${n.cat}</div>
+        <div class="news-title">${n.title}</div>
+        ${n.featured ? `<div class="news-excerpt">${n.excerpt}</div>` : ''}
+        <div class="news-meta">
+          <i class="fas fa-calendar-alt"></i> ${n.date}
+          <i class="fas fa-eye"></i> ${n.reads} reads
         </div>
-    </section>
+      </div>
+    </div>
+  `).join('');
+})();
 
-    <!-- Footer -->
-    <footer class="py-16 px-6 border-t border-white/10 text-center">
-        <div class="flex justify-center space-x-6 mb-8 text-2xl text-gray-400">
-            <a href="#" class="hover:text-cyan-400"><i class="fa-brands fa-x-twitter"></i></a>
-            <a href="#" class="hover:text-cyan-400"><i class="fa-brands fa-instagram"></i></a>
-            <a href="#" class="hover:text-cyan-400"><i class="fa-brands fa-youtube"></i></a>
-            <a href="#" class="hover:text-cyan-400"><i class="fa-brands fa-facebook"></i></a>
+// ═══════════════════════════════ POLL ═══════════════════════════════
+function renderPoll() {
+  const total = POLL_VOTES.reduce((a, b) => a + b, 0);
+  const el = document.getElementById('pollOptions');
+  el.innerHTML = POLL_OPTIONS.map((opt, i) => {
+    const pct = Math.round((POLL_VOTES[i] / total) * 100);
+    const isVoted = pollVotedIndex === i;
+    return `
+      <div onclick="votePoll(${i})" style="cursor:${pollVoted ? 'default' : 'pointer'};
+        background:rgba(255,255,255,0.04); border:1px solid ${isVoted ? 'rgba(232,25,44,0.5)' : 'rgba(255,255,255,0.08)'};
+        border-radius:10px; padding:0.75rem 1rem; transition:all 0.3s;
+        ${!pollVoted ? 'hover background:rgba(255,255,255,0.08)' : ''}">
+        <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem;">
+          <span style="font-size:0.88rem; font-weight:600;">${opt}</span>
+          <span style="font-size:0.82rem; color:rgba(255,255,255,0.5);">${pollVoted ? pct + '%' : POLL_VOTES[i] + ' votes'}</span>
         </div>
-        <p class="text-gray-500 text-sm mb-4">© 2026 Major League Cricket. All Rights Reserved.</p>
-        <div class="flex justify-center space-x-6 text-xs text-gray-600 font-bold uppercase tracking-widest">
-            <a href="#" class="hover:text-white">Privacy Policy</a>
-            <a href="#" class="hover:text-white">Terms of Use</a>
-            <a href="#" class="hover:text-white">Contact</a>
+        ${pollVoted ? `
+          <div style="height:6px; background:rgba(255,255,255,0.08); border-radius:3px; overflow:hidden;">
+            <div style="height:100%; width:${pct}%; background:${isVoted ? 'linear-gradient(90deg,var(--mlc-red),#ff6b7a)' : 'rgba(0,194,255,0.5)'}; border-radius:3px; transition:width 0.8s ease;"></div>
+          </div>` : ''}
+      </div>`;
+  }).join('');
+}
+renderPoll();
+
+function votePoll(idx) {
+  if (pollVoted) return;
+  pollVoted = true;
+  pollVotedIndex = idx;
+  POLL_VOTES[idx] += 1;
+  renderPoll();
+  showToast('poll', `You voted for ${POLL_OPTIONS[idx]}!`, 'fas fa-check-circle');
+}
+
+// ═══════════════════════════════ TICKET MODAL ═══════════════════════════════
+function openTicketModal() {
+  const modal = document.getElementById('ticketModal');
+  const el = document.getElementById('ticketMatches');
+  const matches = [...MATCHES.upcoming, ...MATCHES.live];
+  el.innerHTML = matches.slice(0,4).map(m => `
+    <div style="display:flex; align-items:center; justify-content:space-between; padding:0.9rem 1.1rem;
+      background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:10px;
+      cursor:pointer; transition:border-color 0.2s;" onclick="selectTicketMatch(this)"
+      onmouseover="this.style.borderColor='rgba(232,25,44,0.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)'">
+      <div>
+        <div style="font-weight:700; font-size:0.9rem;">${m.t1} vs ${m.t2}</div>
+        <div style="font-size:0.75rem; color:rgba(255,255,255,0.5); margin-top:0.2rem;">
+          <i class="fas fa-calendar-alt"></i> Jul ${m.date} &nbsp; <i class="fas fa-map-marker-alt"></i> ${m.venue}
         </div>
-    </footer>
+      </div>
+      <div style="font-size:0.82rem; color:var(--mlc-accent); font-weight:600;">From $45</div>
+    </div>
+  `).join('');
+  modal.classList.add('active');
+}
+function selectTicketMatch(el) {
+  document.querySelectorAll('#ticketMatches > div').forEach(d => d.style.borderColor = 'rgba(255,255,255,0.08)');
+  el.style.borderColor = 'rgba(232,25,44,0.6)';
+  el.style.background = 'rgba(232,25,44,0.08)';
+}
+function closeTicketModal() { document.getElementById('ticketModal').classList.remove('active'); }
+document.getElementById('ticketModal').addEventListener('click', function(e) {
+  if (e.target === this) closeTicketModal();
+});
 
-    <script>
-        // Smooth reveal on scroll
-        const observerOptions = {
-            threshold: 0.1
-        };
+// ═══════════════════════════════ NEWSLETTER ═══════════════════════════════
+function subscribeNewsletter() {
+  const email = document.getElementById('emailInput').value.trim();
+  if (!email || !email.includes('@')) {
+    showToast('error','Please enter a valid email address.','fas fa-exclamation-circle');
+    return;
+  }
+  document.getElementById('emailInput').value = '';
+  showToast('success','Successfully subscribed! Welcome to MLC Insider.','fas fa-check-circle');
+}
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animate-fade-up');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, observerOptions);
+// ═══════════════════════════════ TOAST ═══════════════════════════════
+const TOAST_COLORS = {
+  success: { bg: '#1b5e20', icon: '#69f0ae' },
+  error: { bg: '#7f0000', icon: '#ff6b6b' },
+  ticket: { bg: '#1a237e', icon: '#82b1ff' },
+  teams: { bg: '#0d47a1', icon: '#82b1ff' },
+  players: { bg: '#1b5e20', icon: '#a5d6a7' },
+  stats: { bg: '#4a148c', icon: '#e1bee7' },
+  news: { bg: '#e65100', icon: '#ffcc80' },
+  twitter: { bg: '#0d47a1', icon: '#64b5f6' },
+  instagram: { bg: '#880e4f', icon: '#f48fb1' },
+  youtube: { bg: '#b71c1c', icon: '#ef9a9a' },
+  tiktok: { bg: '#006064', icon: '#80deea' },
+  facebook: { bg: '#1a237e', icon: '#90caf9' },
+  poll: { bg: '#1b5e20', icon: '#a5d6a7' },
+  match: { bg: '#33691e', icon: '#dce775' },
+  team: { bg: '#bf360c', icon: '#ffab91' },
+  shop: { bg: '#4e342e', icon: '#bcaaa4' },
+  schedule: { bg: '#37474f', icon: '#90a4ae' },
+  fanzone: { bg: '#f57f17', icon: '#fff59d' },
+  default: { bg: '#1a2e5a', icon: '#64b5f6' },
+};
+function showToast(type, msg, iconClass) {
+  const c = TOAST_COLORS[type] || TOAST_COLORS.default;
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.innerHTML = `
+    <div class="toast-icon" style="background:${c.bg}">
+      <i class="${iconClass}" style="color:${c.icon}"></i>
+    </div>
+    <div class="toast-body">
+      <div class="tb-title">MLC Alert</div>
+      <div class="tb-msg">${msg}</div>
+    </div>`;
+  container.appendChild(toast);
+  setTimeout(() => { toast.style.opacity='0'; toast.style.transform='translateX(30px)'; toast.style.transition='all 0.4s'; setTimeout(()=>toast.remove(), 400); }, 3000);
+}
 
-        document.querySelectorAll('section').forEach(section => {
-            section.style.opacity = "0";
-            observer.observe(section);
-        });
+// ═══════════════════════════════ SCROLL REVEAL ═══════════════════════════════
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-        // Simple ticker animation helper
-        const marquee = document.querySelector('.animate-marquee');
-        let scrollPos = 0;
-        function updateTicker() {
-            scrollPos -= 1;
-            if (Math.abs(scrollPos) >= marquee.scrollWidth / 2) {
-                scrollPos = 0;
-            }
-            marquee.style.transform = `translateX(${scrollPos}px)`;
-            requestAnimationFrame(updateTicker);
-        }
-        
-        // Initializing opacity for observed elements
-        window.addEventListener('load', () => {
-            document.querySelectorAll('section').forEach(s => s.style.opacity = "1");
-        });
-    </script>
+// ═══════════════════════════════ ACTIVE NAV ═══════════════════════════════
+const sections = ['hero','teams-section','matches-section','leaders-section','news-section','fan-section'];
+window.addEventListener('scroll', () => {
+  let cur = '';
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && window.scrollY >= el.offsetTop - 120) cur = id;
+  });
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    a.classList.remove('active');
+    if ((cur === 'hero' && a.href.endsWith('#')) ||
+        (cur !== 'hero' && a.getAttribute('href') === '#' + cur)) {
+      a.classList.add('active');
+    }
+  });
+});
 
-    <style>
-        .animate-marquee {
-            display: flex;
-            white-space: nowrap;
-            animation: marquee 30s linear infinite;
-        }
+// ═══════════════════════════════ LIVE SCORE SIMULATION ═══════════════════════════════
+let liveScore = 142, liveWkts = 4, liveOv = 16.2;
+setInterval(() => {
+  if (Math.random() > 0.5) {
+    liveScore += Math.floor(Math.random() * 6) + 1;
+    if (Math.random() < 0.15) liveWkts = Math.min(liveWkts + 1, 10);
+    liveOv = Math.min(20.0, parseFloat((liveOv + 0.1).toFixed(1)));
+    const tickItems = document.querySelectorAll('.ticker-item');
+    if (tickItems.length > 0) {
+      tickItems[0].querySelector('span').textContent = `🔴 LIVE: MINY vs SO · MINY ${liveScore}/${liveWkts} (${liveOv} ov)`;
+    }
+  }
+}, 4000);
 
-        @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-    </style>
+// ═══════════════════════════════ WELCOME TOAST ═══════════════════════════════
+setTimeout(() => {
+  showToast('ticket', 'Welcome to Major League Cricket 2025! 🏏', 'fas fa-cricket');
+}, 1500);
+</script>
 </body>
 </html>
